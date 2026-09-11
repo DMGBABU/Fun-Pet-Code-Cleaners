@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- Bundled fallback pet: a penguin with a broom. Transparent background.
+       The SMIL animation below gives the broom a sweep if the host renders it; if not,
+       the pet is simply static and the motion comes from the extension's own loop. -->
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+                      values="0 0; 0 -1.5; 0 0" dur="0.7s" repeatCount="indefinite"/>
+
+    <!-- broom, pivoting at the flipper -->
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-14 40 30; 16 40 30; -14 40 30" dur="0.7s" repeatCount="indefinite"/>
+      <path d="M43 42 L57 51 L52 59 L39 49 Z" fill="#fbbf24"/>
+      <path d="M46 44 L53 48" stroke="#d97706" stroke-width="1.2" stroke-linecap="round"/>
+      <path d="M44 47 L50 52" stroke="#d97706" stroke-width="1.2" stroke-linecap="round"/>
+      <line x1="40" y1="30" x2="46" y2="46" stroke="#a16207" stroke-width="3.2" stroke-linecap="round"/>
+    </g>
+
+    <!-- feet -->
+    <ellipse cx="21" cy="54.5" rx="5" ry="2.6" fill="#f59e0b"/>
+    <ellipse cx="32" cy="54.5" rx="5" ry="2.6" fill="#f59e0b"/>
+
+    <!-- body -->
+    <ellipse cx="26.5" cy="37" rx="14" ry="17.5" fill="#1f2937"/>
+    <ellipse cx="26.5" cy="39" rx="9" ry="12.5" fill="#f8fafc"/>
+
+    <!-- flippers -->
+    <ellipse cx="12.5" cy="36" rx="4" ry="10" fill="#111827" transform="rotate(-12 12.5 36)"/>
+    <ellipse cx="40" cy="33" rx="3.6" ry="9" fill="#111827" transform="rotate(18 40 33)"/>
+
+    <!-- head -->
+    <circle cx="26.5" cy="21" r="11.5" fill="#1f2937"/>
+    <ellipse cx="26.5" cy="23.5" rx="8.4" ry="8" fill="#f8fafc"/>
+    <circle cx="22.6" cy="21.2" r="1.8" fill="#111827"/>
+    <circle cx="30.4" cy="21.2" r="1.8" fill="#111827"/>
+    <circle cx="23.2" cy="20.5" r="0.6" fill="#f8fafc"/>
+    <circle cx="31" cy="20.5" r="0.6" fill="#f8fafc"/>
+    <path d="M26.5 24 L31.5 26.8 L26.5 29.6 Z" fill="#f59e0b"/>
+  </g>
+</svg>

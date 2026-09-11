@@ -1,0 +1,123 @@
+{
+  "name": "fun-pet-code-cleaners",
+  "displayName": "Fun Pet Code Cleaners",
+  "description": "A MobaXterm-inspired screensaver: when you go idle, a pet crawls across your code and sweeps it clean — rendered directly in the editor with the native Decoration API.",
+  "version": "0.1.0",
+  "publisher": "dmgbabu",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.100.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "keywords": [
+    "screensaver",
+    "pet",
+    "mobaxterm",
+    "idle",
+    "animation"
+  ],
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "contributes": {
+    "commands": [
+      {
+        "command": "petScreensaver.start",
+        "title": "Pet Screensaver: Start Now",
+        "category": "Pet Screensaver"
+      },
+      {
+        "command": "petScreensaver.stop",
+        "title": "Pet Screensaver: Stop",
+        "category": "Pet Screensaver"
+      },
+      {
+        "command": "petScreensaver.clearAssetCache",
+        "title": "Pet Screensaver: Clear Downloaded Asset Cache",
+        "category": "Pet Screensaver"
+      }
+    ],
+    "configuration": {
+      "title": "Pet Screensaver",
+      "properties": {
+        "petScreensaver.cleanPetUrl": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "URL of an animated GIF of the pet sweeping/cleaning, ideally with a transparent background.\n\nA local absolute file path also works. Leave empty to use the bundled default pet.\n\n**Note:** VS Code cannot render a remote URL inside an editor decoration ([vscode#11055](https://github.com/microsoft/vscode/issues/11055)), so the image is downloaded once and cached on disk. Use an asset around `petSize` pixels tall for best results.",
+          "order": 1
+        },
+        "petScreensaver.idleTimeout": {
+          "type": "number",
+          "default": 60,
+          "minimum": 5,
+          "markdownDescription": "Seconds of inactivity before the screensaver activates. Typing, moving the cursor, or scrolling stops it instantly.",
+          "order": 2
+        },
+        "petScreensaver.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable the idle screensaver. When off, the pet only appears via the 'Start Now' command.",
+          "order": 3
+        },
+        "petScreensaver.petSize": {
+          "type": "number",
+          "default": 28,
+          "minimum": 8,
+          "maximum": 256,
+          "markdownDescription": "Height and width of the pet, in pixels. Some builds of Chromium ignore sizing on decoration images — if the pet renders at its natural size, resize the source asset instead.",
+          "order": 4
+        },
+        "petScreensaver.speed": {
+          "type": "number",
+          "default": 28,
+          "minimum": 1,
+          "maximum": 200,
+          "description": "How fast the pet crawls, in characters per second.",
+          "order": 5
+        },
+        "petScreensaver.sweepWidth": {
+          "type": "number",
+          "default": 100,
+          "minimum": 10,
+          "maximum": 500,
+          "description": "How many columns wide each sweep is before the pet drops to the next line.",
+          "order": 6
+        },
+        "petScreensaver.wipeEffect": {
+          "type": "boolean",
+          "default": true,
+          "description": "Fade out code as the pet sweeps over it, and restore it on the way back. Purely visual — your file is never modified.",
+          "order": 7
+        },
+        "petScreensaver.wipeOpacity": {
+          "type": "number",
+          "default": 0.12,
+          "minimum": 0,
+          "maximum": 1,
+          "description": "How faint swept code becomes when the wipe effect is on. 0 is invisible, 1 is untouched.",
+          "order": 8
+        },
+        "petScreensaver.lineHeightOverride": {
+          "type": "number",
+          "default": 0,
+          "minimum": 0,
+          "description": "Editor line height in pixels, used to centre the pet vertically. Leave at 0 to derive it automatically from your editor font settings.",
+          "order": 9
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/vscode": "^1.100.0",
+    "typescript": "^5.7.2"
+  }
+}
