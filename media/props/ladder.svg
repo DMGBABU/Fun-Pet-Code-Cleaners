@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 100">
+  <!-- Leans against the code; a pet climbs it on the way in and back down on the way out. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-0.8 16 98; 0.8 16 98; -0.8 16 98" dur="2.4s" repeatCount="indefinite"/>
+    <rect x="4" y="2" width="5" height="96" rx="2.5" fill="#b45309"/>
+    <rect x="23" y="2" width="5" height="96" rx="2.5" fill="#b45309"/>
+    <g fill="#d97706">
+      <rect x="5" y="12" width="22" height="4.5" rx="2"/>
+      <rect x="5" y="28" width="22" height="4.5" rx="2"/>
+      <rect x="5" y="44" width="22" height="4.5" rx="2"/>
+      <rect x="5" y="60" width="22" height="4.5" rx="2"/>
+      <rect x="5" y="76" width="22" height="4.5" rx="2"/>
+    </g>
+    <rect x="3" y="95" width="7" height="5" rx="2" fill="#57534e"/>
+    <rect x="22" y="95" width="7" height="5" rx="2" fill="#57534e"/>
+  </g>
+</svg>

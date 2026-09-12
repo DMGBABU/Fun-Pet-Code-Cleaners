@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 64">
+  <!-- Doorway a pet steps out of. The panel swings open and holds, so it reads correctly
+       however the fade-in happens to line up with the loop. -->
+  <rect x="6" y="4" width="40" height="60" rx="4" fill="#78350f"/>
+  <rect x="10" y="8" width="32" height="56" rx="3" fill="#1c1917"/>
+
+  <g>
+    <rect x="10" y="8" width="30" height="56" rx="2" fill="#a16207">
+      <animate attributeName="width" values="30;4;4;30" keyTimes="0;0.22;0.8;1"
+               dur="2.2s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="14" y="14" width="20" height="18" rx="2" fill="#854d0e">
+      <animate attributeName="width" values="20;0;0;20" keyTimes="0;0.22;0.8;1"
+               dur="2.2s" repeatCount="indefinite"/>
+    </rect>
+    <rect x="14" y="38" width="20" height="18" rx="2" fill="#854d0e">
+      <animate attributeName="width" values="20;0;0;20" keyTimes="0;0.22;0.8;1"
+               dur="2.2s" repeatCount="indefinite"/>
+    </rect>
+    <circle cx="36" cy="36" r="2.6" fill="#fde68a">
+      <animate attributeName="opacity" values="1;0;0;1" keyTimes="0;0.22;0.8;1"
+               dur="2.2s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>
