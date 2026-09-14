@@ -1,4 +1,4 @@
-import { ALL_ENTRANCES, CustomPetManifest, EntranceKind, PetConfig } from './config';
+﻿import { ALL_ENTRANCES, CustomPetManifest, EntranceKind, PetConfig } from './config';
 
 /** Sprite states a pet can be drawn in. `clean` is the only one every pet must provide. */
 export type SpriteState = 'clean' | 'walk' | 'run' | 'climb' | 'hang';
@@ -12,6 +12,8 @@ export interface PetSpecies {
 	/** State -> bundled media path, absolute local path, or http(s) URL. */
 	sprites: Partial<Record<SpriteState, string>>;
 	entrances: EntranceKind[];
+	/** What this one snacks on while idling. Falls back to a generic sandwich. */
+	food?: string;
 }
 
 export const BUNDLED_PETS: PetSpecies[] = [
@@ -25,7 +27,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/penguin-climb.svg',
 			hang: 'pets/penguin-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-fish.svg'
 	},
 	{
 		id: 'cat',
@@ -37,7 +40,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/cat-climb.svg',
 			hang: 'pets/cat-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-fish.svg'
 	},
 	{
 		id: 'robot',
@@ -49,7 +53,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/robot-climb.svg',
 			hang: 'pets/robot-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-battery.svg'
 	},
 	{
 		id: 'bear',
@@ -61,7 +66,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/bear-climb.svg',
 			hang: 'pets/bear-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-honey.svg'
 	},
 	{
 		id: 'panda',
@@ -73,7 +79,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/panda-climb.svg',
 			hang: 'pets/panda-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-bamboo.svg'
 	},
 	{
 		id: 'monkey',
@@ -85,7 +92,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/monkey-climb.svg',
 			hang: 'pets/monkey-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-banana.svg'
 	},
 	{
 		id: 'gorilla',
@@ -97,7 +105,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/gorilla-climb.svg',
 			hang: 'pets/gorilla-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-banana.svg'
 	},
 	{
 		id: 'janitor',
@@ -109,7 +118,8 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			climb: 'pets/janitor-climb.svg',
 			hang: 'pets/janitor-hang.svg'
 		},
-		entrances: ALL_ENTRANCES
+		entrances: ALL_ENTRANCES,
+		food: 'props/food-coffee.svg'
 	}
 ];
 
@@ -118,6 +128,29 @@ export const PROP_SPRITES = {
 	ladder: 'props/ladder.svg',
 	rope: 'props/rope.svg'
 } as const;
+
+/** Shown while a pet is idling. Which pet does which is random, never fixed by species. */
+export const ACTIVITY_SPRITES = {
+	zzz: 'props/zzz.svg',
+	note: 'props/note.svg',
+	snack: 'props/food-snack.svg'
+} as const;
+
+/** Doodles a pet leaves on the code while scribbling. */
+export const SCRIBBLE_SPRITES = [
+	'props/scribble-1.svg',
+	'props/scribble-2.svg',
+	'props/scribble-3.svg'
+];
+
+/** Every sprite that is not tied to a pet state, for pre-resolving assets. */
+export function sharedSpriteSpecs(): string[] {
+	return [
+		...Object.values(PROP_SPRITES),
+		...Object.values(ACTIVITY_SPRITES),
+		...SCRIBBLE_SPRITES
+	];
+}
 
 /**
  * The pets available for this run: bundled species filtered by the `pets` setting, plus any

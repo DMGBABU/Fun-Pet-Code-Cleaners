@@ -71,14 +71,13 @@ class IdleWatcher implements vscode.Disposable {
 	}
 
 	private onActivity(): void {
+		// The first nudge sends the pets home, and the exit is then left to play out. Killing
+		// it on the next keystroke meant nobody ever saw them leave, since a second keystroke
+		// is only milliseconds behind the first. Letting it run costs nothing: the dimming is
+		// already cleared, the sprites take no layout space and cannot be clicked.
+		// `Pet Screensaver: Stop` is there for anyone who wants them gone instantly.
 		if (this.screensaver.isRunning) {
-			// First nudge starts the pets packing up; a second one during the exit means the
-			// user is actually working, so get out of the way immediately.
-			if (this.screensaver.isExiting) {
-				this.screensaver.hardStop();
-			} else {
-				this.screensaver.interrupt();
-			}
+			this.screensaver.interrupt();
 		}
 		this.arm();
 	}

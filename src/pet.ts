@@ -1,17 +1,54 @@
 import * as vscode from 'vscode';
 import { clamp, EntranceKind } from './config';
 import { SpritePool } from './decorations';
-import { PetSpecies, PROP_SPRITES, SPRITE_STATES, spriteFor, SpriteState } from './pets';
+import {
+	ACTIVITY_SPRITES,
+	PetSpecies,
+	PROP_SPRITES,
+	SCRIBBLE_SPRITES,
+	sharedSpriteSpecs,
+	SPRITE_STATES,
+	spriteFor,
+	SpriteState
+} from './pets';
 import { CleanLedger, CodeSegment, SegmentClaims } from './terrain';
 
 export type Phase = 'entering' | 'cleaning' | 'returning' | 'leaving' | 'done';
 
-/** Tick budgets for each choreography, at 15fps. */
-const ENTER_TICKS: Record<EntranceKind, number> = { edge: 14, door: 24, ladder: 28, abseil: 26 };
-const LEAVE_TICKS: Record<EntranceKind, number> = { edge: 12, door: 20, ladder: 22, abseil: 20 };
+/** What a pet does when there is nothing to clean. Chosen at random, never by species. */
+export type Activity = 'scribble' | 'sleep' | 'eat' | 'dance';
+const ACTIVITIES: Activity[] = ['scribble', 'sleep', 'eat', 'dance'];
 
-/** Cap on the walk-home leg so an interrupted pet is never slow to clear off. */
-const RETURN_MAX_TICKS = 12;
+/** A proper knock-off, for when the code is spotless. */
+const IDLE_MIN_TICKS = 70;
+const IDLE_MAX_TICKS = 170;
+/** A quick breather between lines, so idling is seen even on a file that is never finished. */
+const BREAK_MIN_TICKS = 30;
+const BREAK_MAX_TICKS = 75;
+/** Chance of taking that breather after finishing a line. */
+const BREAK_CHANCE = 0.12;
+
+const MAX_SCRIBBLES = 5;
+const SCRIBBLE_EVERY = 13;
+
+/** Tick budgets for each choreography, at 15fps. Leaving is unhurried enough to watch. */
+const ENTER_TICKS: Record<EntranceKind, number> = { edge: 14, door: 24, ladder: 28, abseil: 26 };
+const LEAVE_TICKS: Record<EntranceKind, number> = { edge: 20, door: 34, ladder: 38, abseil: 34 };
+
+/**
+ * The walk home is run at a pace, not a fixed budget. A fixed budget meant a pet thirty lines
+ * away covered several lines per tick, which is why an interrupted exit looked like everything
+ * vanishing at once. The cap keeps a very distant pet from dawdling.
+ */
+const RUN_PACE_MULTIPLIER = 3;
+const RETURN_MIN_TICKS = 10;
+/**
+ * A pet further from home than this budget allows does exceed running pace — the clamp wins.
+ * That is deliberate: holding true pace across a 50-line viewport would mean a seven-second
+ * exit. At this budget the worst case is about nine lines a second, which still reads as a
+ * sprint rather than a teleport.
+ */
+const RETURN_MAX_TICKS = 60;
 
 const LADDER_LINES = 4;
 const ABSEIL_LINES = 4;
@@ -65,8 +102,15 @@ export class Pet {
 	private readonly homeLine: number;
 	private readonly edgeSign: 1 | -1;
 
-	private mode: 'sweep' | 'travel' = 'sweep';
+	private mode: 'sweep' | 'travel' | 'idle' = 'sweep';
 	private segment?: CodeSegment;
+
+	// Idle play
+	private activity?: Activity;
+	private activityTicks = 0;
+	private tilt = 0;
+	private scribbles: Array<{ line: number; col: number; kind: number }> = [];
+	private scribbleCooldown = 0;
 
 	// Travel leg
 	private travelFrom = { line: 0, col: 0 };
@@ -131,12 +175,13 @@ export class Pet {
 			return;
 		}
 		env.claims.releaseAll(this);
+		this.endIdle(); // drop the nap, the snack and any doodles
 		this.phase = 'returning';
 		this.phaseTick = 0;
-		// Deliberately a fixed brisk budget rather than walking pace: the user is back and
-		// waiting, so the pet hurries home however far away it was. It heads for `homeLine`,
-		// which for a ladder is the top rung the exit animation descends from.
-		this.beginTravel(this.homeLine, this.anchorCol, RETURN_MAX_TICKS);
+		// Running pace: faster than a stroll because the user is back, but still a pace, so the
+		// dash home is watchable. It heads for `homeLine`, which for a ladder is the top rung
+		// the exit animation descends from.
+		this.beginTravel(this.homeLine, this.anchorCol, this.runTicksTo(env, this.homeLine, this.anchorCol));
 	}
 
 	private tickEntering(env: PetEnv): void {
@@ -214,6 +259,11 @@ export class Pet {
 	}
 
 	private tickCleaning(env: PetEnv): void {
+		if (this.mode === 'idle') {
+			this.tickIdle(env);
+			return;
+		}
+
 		if (this.mode === 'travel') {
 			this.advanceTravel();
 			if (this.travelTick >= this.travelTicks) {
@@ -256,7 +306,7 @@ export class Pet {
 		this.advanceTravel();
 		this.phaseTick++;
 		const arrived = this.travelTick >= this.travelTicks;
-		if (arrived || this.phaseTick >= RETURN_MAX_TICKS) {
+		if (arrived || this.phaseTick > RETURN_MAX_TICKS) {
 			this.line = this.homeLine;
 			this.col = this.anchorCol;
 			this.phase = 'leaving';
@@ -325,11 +375,16 @@ export class Pet {
 		);
 
 		if (available.length === 0) {
-			// Everything is either done or spoken for. Stand still rather than re-cleaning
-			// a line another pet is already working — re-scanning each tick means this pet
-			// picks work back up the moment a claim is released.
-			this.segment = undefined;
-			this.mode = 'sweep';
+			// Everything is either done or spoken for. Knocking off and playing is far better
+			// television than packing up and leaving, which just ended the show.
+			this.beginIdle(env, IDLE_MIN_TICKS, IDLE_MAX_TICKS);
+			return;
+		}
+
+		// Occasionally take a breather even with work outstanding, so the idle antics show up
+		// on a big file that never gets finished.
+		if (env.rng() < BREAK_CHANCE) {
+			this.beginIdle(env, BREAK_MIN_TICKS, BREAK_MAX_TICKS);
 			return;
 		}
 
@@ -359,6 +414,84 @@ export class Pet {
 		// Travelling is not cleaning, so it moves a little faster than a sweep.
 		const horizontal = Math.abs(col - this.col) / Math.max(1e-4, env.charsPerTick * 1.6);
 		return Math.max(4, Math.round(Math.max(vertical, horizontal)));
+	}
+
+	/**
+	 * Knocks off and picks something to do. The activity is drawn at random every time, so the
+	 * same pet naps once and snacks the next — nothing is tied to a species.
+	 */
+	private beginIdle(env: PetEnv, minTicks: number, maxTicks: number): void {
+		if (this.segment) {
+			env.claims.release(this.segment.line, this);
+			this.segment = undefined;
+		}
+		this.mode = 'idle';
+		this.activity = ACTIVITIES[Math.floor(env.rng() * ACTIVITIES.length)];
+		this.activityTicks = Math.round(minTicks + env.rng() * (maxTicks - minTicks));
+		this.scribbles = [];
+		this.scribbleCooldown = 0;
+		this.tilt = 0;
+	}
+
+	private tickIdle(env: PetEnv): void {
+		this.activityTicks--;
+
+		switch (this.activity) {
+			case 'sleep':
+				// A slow list to one side, as though nodding off on its feet.
+				this.tilt = -8 + Math.sin(this.activityTicks / 22) * 3;
+				break;
+			case 'dance':
+				this.tilt = Math.sin(this.activityTicks / 2.2) * 13;
+				break;
+			case 'scribble':
+				this.tilt = Math.sin(this.activityTicks / 3) * 4;
+				if (--this.scribbleCooldown <= 0 && this.scribbles.length < MAX_SCRIBBLES) {
+					this.scribbleCooldown = SCRIBBLE_EVERY;
+					this.scribbles.push({
+						line: Math.round(this.line),
+						col: Math.round(this.col) + 1 + Math.floor(env.rng() * 6),
+						kind: Math.floor(env.rng() * 3)
+					});
+				}
+				break;
+			default:
+				this.tilt = 0;
+				break;
+		}
+
+		// Look up now and then: another pet may have released a line, or the code may have
+		// "got dirty" again when the round reset.
+		const lookForWork = this.activityTicks <= 0 || this.activityTicks % 20 === 0;
+		if (lookForWork) {
+			const work = env.terrain.some(
+				s => !env.ledger.isFullyClean(s) && env.claims.isAvailable(s.line, this)
+			);
+			if (work) {
+				this.endIdle();
+				this.chooseNextSegment(env);
+				return;
+			}
+		}
+
+		if (this.activityTicks <= 0) {
+			this.beginIdle(env, IDLE_MIN_TICKS, IDLE_MAX_TICKS);
+		}
+	}
+
+	private endIdle(): void {
+		this.mode = 'sweep';
+		this.activity = undefined;
+		this.activityTicks = 0;
+		this.scribbles = [];
+		this.tilt = 0;
+	}
+
+	/** Same idea as `walkTicksTo`, at a run, and bounded so an exit is never open-ended. */
+	private runTicksTo(env: PetEnv, line: number, col: number): number {
+		const vertical = Math.abs(line - this.line) / Math.max(1e-4, env.linesPerTick * RUN_PACE_MULTIPLIER);
+		const horizontal = Math.abs(col - this.col) / Math.max(1e-4, env.charsPerTick * RUN_PACE_MULTIPLIER * 1.6);
+		return clamp(Math.round(Math.max(vertical, horizontal)), RETURN_MIN_TICKS, RETURN_MAX_TICKS);
 	}
 
 	private beginTravel(line: number, col: number, ticks: number): void {
@@ -395,6 +528,8 @@ export class Pet {
 			return;
 		}
 
+		this.drawActivity(env);
+
 		const spec = spriteFor(this.species, this.spriteState);
 		const uri = env.uris.get(spec);
 		if (!uri) {
@@ -411,14 +546,90 @@ export class Pet {
 				height: size,
 				facing: this.facing,
 				dx: anchor.frac * env.charWidth + this.dxPx,
-				// Sit the sprite on the line rather than letting it hang below the baseline.
-				dy: -(size - env.lineHeight) / 2,
+				// Centre on the line, plus the sub-line remainder so vertical movement glides
+				// rather than hopping a whole line at a time.
+				dy: -(size - env.lineHeight) / 2 + anchor.lineFrac * env.lineHeight,
 				opacity: this.opacity,
+				rotate: this.tilt,
 				z: 12
 			},
 			anchor.line,
 			anchor.col
 		);
+	}
+
+	/** The Zzz, the snack, the music note, and any doodles left on the code. */
+	private drawActivity(env: DrawEnv): void {
+		if (this.mode !== 'idle' || !this.activity) {
+			return;
+		}
+
+		const size = env.petSize;
+
+		for (const mark of this.scribbles) {
+			const uri = env.uris.get(SCRIBBLE_SPRITES[mark.kind] ?? SCRIBBLE_SPRITES[0]);
+			if (!uri) {
+				continue;
+			}
+			const at = this.anchorAt(env.doc, mark.line, mark.col);
+			env.pool.draw(
+				{
+					uri,
+					width: size * 0.85,
+					height: size * 0.85,
+					facing: 1,
+					dx: at.frac * env.charWidth,
+					dy: -(size * 0.85 - env.lineHeight) / 2 + at.lineFrac * env.lineHeight,
+					opacity: 0.95,
+					z: 11
+				},
+				at.line,
+				at.col
+			);
+		}
+
+		const spec = this.activityPropSpec();
+		if (!spec) {
+			return;
+		}
+		const uri = env.uris.get(spec);
+		if (!uri) {
+			return;
+		}
+
+		const anchor = this.anchorAt(env.doc, this.line, this.col);
+		// Zzz and music float overhead; food is held out in front.
+		const overhead = this.activity === 'sleep' || this.activity === 'dance';
+
+		env.pool.draw(
+			{
+				uri,
+				width: size * 0.9,
+				height: size * 0.9,
+				facing: 1,
+				dx: anchor.frac * env.charWidth + (overhead ? size * 0.45 : size * 0.8) * this.facing,
+				dy: -(size * 0.9 - env.lineHeight) / 2
+					+ anchor.lineFrac * env.lineHeight
+					+ (overhead ? -size * 0.7 : size * 0.12),
+				opacity: 1,
+				z: 13
+			},
+			anchor.line,
+			anchor.col
+		);
+	}
+
+	private activityPropSpec(): string | undefined {
+		switch (this.activity) {
+			case 'sleep':
+				return ACTIVITY_SPRITES.zzz;
+			case 'dance':
+				return ACTIVITY_SPRITES.note;
+			case 'eat':
+				return this.species.food ?? ACTIVITY_SPRITES.snack;
+			default:
+				return undefined;
+		}
 	}
 
 	private drawProp(env: DrawEnv): void {
@@ -486,16 +697,30 @@ export class Pet {
 		if (this.phase === 'returning') {
 			return 'run'; // heading home in a hurry
 		}
+		if (this.mode === 'idle') {
+			// Doodling wants the tool in hand; napping, snacking and dancing do not.
+			return this.activity === 'scribble' ? 'clean' : 'walk';
+		}
 		return this.mode === 'sweep' ? 'clean' : 'walk';
 	}
 
-	/** Snaps a float position onto a real character, keeping the remainder as a pixel offset. */
+	/**
+	 * Snaps a float position onto a real character, keeping both remainders as pixel offsets.
+	 *
+	 * The vertical remainder matters as much as the horizontal one: a decoration can only be
+	 * anchored to a whole line, so without `lineFrac` a pet crossing lines hops a full line
+	 * height at a time, which reads as jumping however slow the underlying pace is.
+	 */
 	private anchorAt(doc: vscode.TextDocument, line: number, col: number) {
-		const snappedLine = clamp(Math.round(line), 0, doc.lineCount - 1);
+		const bounded = clamp(line, 0, doc.lineCount - 1);
+		const snappedLine = Math.round(bounded);
+		const lineFrac = bounded - snappedLine; // -0.5 .. 0.5
+
 		const maxCol = doc.lineAt(snappedLine).text.length;
 		const snappedCol = clamp(col, 0, maxCol);
 		const whole = Math.floor(snappedCol);
-		return { line: snappedLine, col: whole, frac: snappedCol - whole };
+
+		return { line: snappedLine, col: whole, frac: snappedCol - whole, lineFrac };
 	}
 }
 
@@ -509,10 +734,13 @@ function easeInCubic(t: number): number {
 
 /** Every sprite spec a roster could ask for, so assets can be pre-resolved before a run. */
 export function spriteSpecsFor(species: PetSpecies[]): string[] {
-	const specs = new Set<string>(Object.values(PROP_SPRITES));
+	const specs = new Set<string>(sharedSpriteSpecs());
 	for (const pet of species) {
 		for (const state of SPRITE_STATES) {
 			specs.add(spriteFor(pet, state));
+		}
+		if (pet.food) {
+			specs.add(pet.food);
 		}
 	}
 	return [...specs];

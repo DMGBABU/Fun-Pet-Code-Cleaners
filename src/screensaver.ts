@@ -11,8 +11,14 @@ type Timer = ReturnType<typeof setTimeout>;
 /** Pause between a finished round and the next crew arriving. */
 const RESPAWN_TICKS = 26;
 
-/** Hard ceiling on a graceful exit, so an interrupted run always clears promptly. */
-const EXIT_DEADLINE_TICKS = 34;
+/**
+ * Hard ceiling on a graceful exit. Generous enough for a distant pet to run home and play out
+ * its door or ladder routine, since watching them leave is half the fun.
+ */
+const EXIT_DEADLINE_TICKS = 120;
+
+/** How long the crew plays once the code is spotless, before it gets "dirty" again. */
+const PLAYTIME_TICKS = 300;
 
 /** Ladder and abseil need headroom above the touchdown line. */
 const HEADROOM_LINES = 4;
@@ -46,6 +52,7 @@ export class Screensaver implements vscode.Disposable {
 	private interrupted = false;
 	private exitTicks = 0;
 	private respawnIn = 0;
+	private playTicks = 0;
 
 	constructor(private readonly assets: AssetResolver) {}
 
@@ -208,11 +215,19 @@ export class Screensaver implements vscode.Disposable {
 				this.hardStop();
 				return;
 			}
-		} else if (this.ledger?.allClean && this.pets.some(p => !p.isDone)) {
-			// Everything on screen is spotless — the crew packs up on its own.
-			for (const pet of this.pets) {
-				pet.beginExit(env);
+		} else if (this.ledger?.allClean) {
+			// Spotless. The crew used to pack up and leave here, which ended the show just as
+			// someone might be watching. Instead they knock off and play — pets with no work
+			// pick an idle activity on their own — and after a while the code "gets dirty"
+			// again and they start over.
+			this.playTicks++;
+			if (this.playTicks > PLAYTIME_TICKS) {
+				this.ledger.clear();
+				this.clearWipe();
+				this.playTicks = 0;
 			}
+		} else {
+			this.playTicks = 0;
 		}
 
 		if (this.pets.length > 0 && this.pets.every(p => p.isDone)) {

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- The robot's idea of a snack: a cell topping itself up. -->
+  <rect x="24" y="4" width="16" height="7" rx="3" fill="#94a3b8"/>
+  <rect x="14" y="10" width="36" height="52" rx="7" fill="#334155"/>
+  <rect x="19" y="15" width="26" height="42" rx="4" fill="#0f172a"/>
+  <rect x="19" y="39" width="26" height="18" rx="4" fill="#4ade80">
+    <animate attributeName="y" values="39;15;39" dur="2.6s" repeatCount="indefinite"/>
+    <animate attributeName="height" values="18;42;18" dur="2.6s" repeatCount="indefinite"/>
+  </rect>
+  <path d="M34 20 L26 38 L32 38 L30 52 L40 32 L33 32 Z" fill="#fde68a"/>
+</svg>

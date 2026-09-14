@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- A small heart, drawn then given a beat. -->
+  <g>
+    <animateTransform attributeName="transform" type="scale" values="1; 1.12; 1"
+                      dur="1.2s" additive="sum" repeatCount="indefinite"/>
+    <path d="M32 54 C10 38 8 22 20 16 C27 12 32 20 32 20 C32 20 37 12 44 16 C56 22 54 38 32 54 Z"
+          stroke="#f87171" stroke-width="5" fill="none" stroke-linejoin="round" stroke-linecap="round">
+      <animate attributeName="stroke-dasharray" values="0 160; 160 0" dur="0.9s" fill="freeze"/>
+    </path>
+  </g>
+</svg>

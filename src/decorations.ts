@@ -14,14 +14,17 @@ export interface SpriteStyle {
 	/** Vertical nudge in px, measured from the top of the anchor line. */
 	dy: number;
 	opacity: number;
+	/** Tilt in degrees, for dozing and bobbing. */
+	rotate?: number;
 	/** Higher sits in front. Props sit behind their pet. */
 	z: number;
 }
 
 /** Quantisation steps. Finer looks smoother but multiplies the number of CSS rules. */
 const DX_STEP = 2;
-const DY_STEP = 2;
+const DY_STEP = 3;
 const OPACITY_STEP = 0.1;
+const ROTATE_STEP = 4;
 
 /**
  * Refuse to grow past this many rules; a runaway pool would bloat the editor stylesheet.
@@ -133,6 +136,7 @@ function keyOf(s: SpriteStyle): string {
 		quantise(s.dx, DX_STEP),
 		quantise(s.dy, DY_STEP),
 		quantise(s.opacity, OPACITY_STEP),
+		quantise(s.rotate ?? 0, ROTATE_STEP),
 		s.z
 	].join('|');
 }
@@ -147,6 +151,7 @@ function create(style: SpriteStyle): vscode.TextEditorDecorationType {
 	const dx = quantise(style.dx, DX_STEP);
 	const dy = quantise(style.dy, DY_STEP);
 	const opacity = quantise(style.opacity, OPACITY_STEP);
+	const rotate = quantise(style.rotate ?? 0, ROTATE_STEP);
 
 	// Horizontal and vertical placement come from deliberately different mechanisms.
 	//
@@ -175,7 +180,7 @@ function create(style: SpriteStyle): vscode.TextEditorDecorationType {
 		`z-index:${style.z}`,
 		'pointer-events:none',
 		// translate is applied after scaleX, so the nudge stays rightwards even when flipped.
-		`transform:translateX(${dx}px) scaleX(${style.facing})`,
+		`transform:translateX(${dx}px) rotate(${rotate}deg) scaleX(${style.facing})`,
 		'transform-origin:center'
 	].join('; ') + ';';
 

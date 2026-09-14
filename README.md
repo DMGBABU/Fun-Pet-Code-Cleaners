@@ -34,7 +34,7 @@ Press **F5** for the Extension Development Host, then run **`Pet Screensaver: St
 | `petSize` | `0` | Pixels. `0` matches your line height |
 | `speed` | `3` | Characters per second while sweeping |
 | `travelSpeed` | `2` | Lines per second while walking between lines |
-| `exitAnimation` | `true` | Let pets run home instead of vanishing |
+| `exitAnimation` | `true` | Let pets run home and leave properly instead of vanishing |
 | `customPets` | `[]` | Your own pets — see below |
 | `cleanPetUrl` | `""` | Shortcut for a single-image custom pet |
 | `wipeEffect` / `wipeOpacity` | `true` / `0.12` | Fade code out behind the pets |
@@ -94,6 +94,21 @@ Eight bundled pets, each hand-animated across five states:
 Pick a subset with **`Pet Screensaver: Choose Pets`**.
 
 Species are dealt from a shuffled bag rather than picked independently per pet, so a crew is a mix rather than the same animal five times over. Every species appears once before any repeats.
+
+## When the work runs out
+
+Pets do not pack up when the code is clean — they knock off and play. Each one picks at random from:
+
+| | |
+|---|---|
+| **Scribble** | Doodles a loop, a wonky star or a heart onto the code, drawn stroke by stroke |
+| **Sleep** | Lists gently to one side with Zs drifting up |
+| **Eat** | Produces a snack — bamboo, a banana, fish, honey, a battery, coffee |
+| **Dance** | Bobs side to side with music notes overhead |
+
+Which pet does what is drawn fresh every time, so the panda is not always the one eating bamboo. Pets also take the occasional short break mid-shift, so the antics show up even on a file too big to ever finish.
+
+After a while the code "gets dirty" again and the crew starts over. They only actually leave when you come back.
 
 ## How it works
 
