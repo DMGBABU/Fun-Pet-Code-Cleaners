@@ -5,6 +5,19 @@
   "version": "0.1.0",
   "publisher": "dmgbabu",
   "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DMGBABU/Fun-Pet-Code-Cleaners.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DMGBABU/Fun-Pet-Code-Cleaners/issues"
+  },
+  "homepage": "https://github.com/DMGBABU/Fun-Pet-Code-Cleaners#readme",
+  "galleryBanner": {
+    "color": "#0284c7",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -141,7 +154,7 @@
         "petScreensaver.customPets": {
           "type": "array",
           "default": [],
-          "markdownDescription": "Your own pets. Each entry needs an `id` and a `sprites.clean` image; `walk`, `climb` and `hang` are optional and fall back to `clean`.\n\nValues can be http(s) URLs or absolute local paths. Animated GIFs and animated SVGs both work.\n\n```json\n{\n  \"id\": \"my-pet\",\n  \"label\": \"My Pet\",\n  \"sprites\": { \"clean\": \"https://example.com/sweep.gif\" },\n  \"entrances\": [\"edge\"]\n}\n```",
+          "markdownDescription": "Your own pets. Each entry needs an `id` and a `sprites.clean` image; `walk`, `run`, `climb` and `hang` are optional and fall back to `clean`.\n\nValues can be http(s) URLs or absolute local paths. Animated GIFs and animated SVGs both work.\n\n```json\n{\n  \"id\": \"my-pet\",\n  \"label\": \"My Pet\",\n  \"sprites\": { \"clean\": \"https://example.com/sweep.gif\" },\n  \"entrances\": [\"edge\"]\n}\n```",
           "items": {
             "type": "object",
             "required": ["id", "sprites"],
@@ -154,6 +167,7 @@
                 "properties": {
                   "clean": { "type": "string" },
                   "walk": { "type": "string" },
+                  "run": { "type": "string" },
                   "climb": { "type": "string" },
                   "hang": { "type": "string" }
                 }
@@ -193,11 +207,16 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "publish:openvsx": "ovsx publish"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/vscode": "^1.100.0",
+    "@vscode/vsce": "^3.2.1",
+    "ovsx": "^0.10.1",
     "typescript": "^5.7.2"
   }
 }

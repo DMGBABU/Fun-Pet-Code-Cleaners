@@ -86,9 +86,15 @@ export class Screensaver implements vscode.Disposable {
 		this.respawnIn = 0;
 
 		if (cfg.wipeEffect) {
+			// Dim with a translucent colour rather than `opacity`. CSS opacity on a span also
+			// fades its pseudo-elements, so any pet anchored inside an already-swept range would
+			// fade itself out. Colour only touches glyphs, never a `content: url()` sprite.
+			// The !important beats the syntax token colour, which is set on a competing class.
+			const wipe = `rgba(128,128,128,${cfg.wipeOpacity})`;
 			this.wipeType = vscode.window.createTextEditorDecorationType({
 				rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
-				opacity: String(cfg.wipeOpacity)
+				color: wipe,
+				textDecoration: `none; color:${wipe} !important;`
 			});
 		}
 

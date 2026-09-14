@@ -144,12 +144,19 @@ function create(style: SpriteStyle): vscode.TextEditorDecorationType {
 	const dy = quantise(style.dy, DY_STEP);
 	const opacity = quantise(style.opacity, OPACITY_STEP);
 
-	// `left`/`top` are relative to the .view-line the decoration is anchored in, so these are
-	// offsets from the anchor character rather than absolute editor coordinates.
+	// Horizontal and vertical placement come from deliberately different mechanisms.
+	//
+	// `left` is NOT set. On an absolutely positioned element an explicit `left` resolves against
+	// the containing block — here the whole `.view-line` — which would pin every sprite to the
+	// start of its line regardless of the column it is anchored at. Leaving it `auto` puts the
+	// pseudo-element at its *static* position instead: exactly where the anchor character sits.
+	// The sub-character remainder then rides along in `translateX`.
+	//
+	// `top` IS set, because `.view-line` is exactly one line tall, so resolving against the
+	// containing block is precisely what we want for vertical centring.
 	const css = [
 		'none',
 		'position:absolute',
-		`left:${dx}px`,
 		`top:${dy}px`,
 		`width:${width}px`,
 		`height:${height}px`,
@@ -163,7 +170,8 @@ function create(style: SpriteStyle): vscode.TextEditorDecorationType {
 		`opacity:${opacity}`,
 		`z-index:${style.z}`,
 		'pointer-events:none',
-		`transform:scaleX(${style.facing})`,
+		// translate is applied after scaleX, so the nudge stays rightwards even when flipped.
+		`transform:translateX(${dx}px) scaleX(${style.facing})`,
 		'transform-origin:center'
 	].join('; ') + ';';
 
