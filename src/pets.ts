@@ -50,6 +50,66 @@ export const BUNDLED_PETS: PetSpecies[] = [
 			hang: 'pets/robot-hang.svg'
 		},
 		entrances: ALL_ENTRANCES
+	},
+	{
+		id: 'bear',
+		label: 'Bear',
+		sprites: {
+			clean: 'pets/bear-clean.svg',
+			walk: 'pets/bear-walk.svg',
+			run: 'pets/bear-run.svg',
+			climb: 'pets/bear-climb.svg',
+			hang: 'pets/bear-hang.svg'
+		},
+		entrances: ALL_ENTRANCES
+	},
+	{
+		id: 'panda',
+		label: 'Panda',
+		sprites: {
+			clean: 'pets/panda-clean.svg',
+			walk: 'pets/panda-walk.svg',
+			run: 'pets/panda-run.svg',
+			climb: 'pets/panda-climb.svg',
+			hang: 'pets/panda-hang.svg'
+		},
+		entrances: ALL_ENTRANCES
+	},
+	{
+		id: 'monkey',
+		label: 'Monkey',
+		sprites: {
+			clean: 'pets/monkey-clean.svg',
+			walk: 'pets/monkey-walk.svg',
+			run: 'pets/monkey-run.svg',
+			climb: 'pets/monkey-climb.svg',
+			hang: 'pets/monkey-hang.svg'
+		},
+		entrances: ALL_ENTRANCES
+	},
+	{
+		id: 'gorilla',
+		label: 'Gorilla',
+		sprites: {
+			clean: 'pets/gorilla-clean.svg',
+			walk: 'pets/gorilla-walk.svg',
+			run: 'pets/gorilla-run.svg',
+			climb: 'pets/gorilla-climb.svg',
+			hang: 'pets/gorilla-hang.svg'
+		},
+		entrances: ALL_ENTRANCES
+	},
+	{
+		id: 'janitor',
+		label: 'Janitor',
+		sprites: {
+			clean: 'pets/janitor-clean.svg',
+			walk: 'pets/janitor-walk.svg',
+			run: 'pets/janitor-run.svg',
+			climb: 'pets/janitor-climb.svg',
+			hang: 'pets/janitor-hang.svg'
+		},
+		entrances: ALL_ENTRANCES
 	}
 ];
 

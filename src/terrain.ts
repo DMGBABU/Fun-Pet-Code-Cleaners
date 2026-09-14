@@ -44,6 +44,46 @@ export function segmentWidth(segment: CodeSegment): number {
 	return segment.end - segment.start;
 }
 
+/**
+ * Which pet is currently working which line.
+ *
+ * `CleanLedger.isFullyClean` already stops a pet re-sweeping a *finished* line, but two pets
+ * choosing the same dirty line at the same moment would both work it — neither sees it as
+ * clean until one of them finishes. A claim is taken when a line is chosen, not when it is
+ * reached, so the second pet looks elsewhere while the first is still walking over.
+ */
+export class SegmentClaims {
+	private readonly owners = new Map<number, object>();
+
+	clear(): void {
+		this.owners.clear();
+	}
+
+	/** True if `owner` may work this line — either nobody holds it, or they already do. */
+	isAvailable(line: number, owner: object): boolean {
+		const current = this.owners.get(line);
+		return current === undefined || current === owner;
+	}
+
+	claim(line: number, owner: object): void {
+		this.owners.set(line, owner);
+	}
+
+	release(line: number, owner: object): void {
+		if (this.owners.get(line) === owner) {
+			this.owners.delete(line);
+		}
+	}
+
+	releaseAll(owner: object): void {
+		for (const [line, held] of [...this.owners]) {
+			if (held === owner) {
+				this.owners.delete(line);
+			}
+		}
+	}
+}
+
 interface Span {
 	start: number;
 	end: number;

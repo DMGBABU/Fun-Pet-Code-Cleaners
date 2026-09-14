@@ -2,7 +2,7 @@ import * as vscode from 'vscode';
 import { clamp, EntranceKind } from './config';
 import { SpritePool } from './decorations';
 import { PetSpecies, PROP_SPRITES, SPRITE_STATES, spriteFor, SpriteState } from './pets';
-import { CleanLedger, CodeSegment } from './terrain';
+import { CleanLedger, CodeSegment, SegmentClaims } from './terrain';
 
 export type Phase = 'entering' | 'cleaning' | 'returning' | 'leaving' | 'done';
 
@@ -20,7 +20,11 @@ const EDGE_SLIDE_PX = 90;
 export interface PetEnv {
 	terrain: CodeSegment[];
 	ledger: CleanLedger;
+	claims: SegmentClaims;
+	/** Sweeping pace, in characters per tick. */
 	charsPerTick: number;
+	/** Walking pace between lines, in lines per tick. */
+	linesPerTick: number;
 	rng(): number;
 }
 
@@ -76,6 +80,7 @@ export class Pet {
 		env: PetEnv
 	) {
 		this.segment = start;
+		env.claims.claim(start.line, this);
 		this.anchorLine = start.line;
 		this.anchorCol = Math.round(start.start + env.rng() * Math.max(1, start.end - start.start));
 		this.line = this.anchorLine;
@@ -118,12 +123,15 @@ export class Pet {
 	}
 
 	/** Asks the pet to pack up. It walks home, performs its exit, then reports `done`. */
-	beginExit(): void {
+	beginExit(env: PetEnv): void {
 		if (this.phase === 'leaving' || this.phase === 'done') {
 			return;
 		}
+		env.claims.releaseAll(this);
 		this.phase = 'returning';
 		this.phaseTick = 0;
+		// Deliberately a fixed brisk budget rather than walking pace: the user is back and
+		// waiting, so the pet hurries home however far away it was.
 		this.beginTravel(this.anchorLine, this.anchorCol, RETURN_MAX_TICKS);
 	}
 
@@ -278,29 +286,50 @@ export class Pet {
 
 	/** Prefers dirty code, and prefers it nearby, so the pet reads as working a patch. */
 	private chooseNextSegment(env: PetEnv): void {
-		const dirty = env.terrain.filter(s => !env.ledger.isFullyClean(s));
-		const pool = dirty.length > 0 ? dirty : env.terrain;
-		if (pool.length === 0) {
+		// Hand back the line we just finished so someone else may walk over it.
+		if (this.segment) {
+			env.claims.release(this.segment.line, this);
+		}
+
+		const available = env.terrain.filter(
+			s => !env.ledger.isFullyClean(s) && env.claims.isAvailable(s.line, this)
+		);
+
+		if (available.length === 0) {
+			// Everything is either done or spoken for. Stand still rather than re-cleaning
+			// a line another pet is already working — re-scanning each tick means this pet
+			// picks work back up the moment a claim is released.
+			this.segment = undefined;
+			this.mode = 'sweep';
 			return;
 		}
 
-		const nearest = [...pool]
+		// Prefer nearby work, so a pet reads as working a patch rather than criss-crossing.
+		const nearest = [...available]
 			.sort((a, b) => Math.abs(a.line - this.line) - Math.abs(b.line - this.line))
-			.slice(0, 5);
-		const next = nearest[Math.floor(env.rng() * nearest.length)] ?? pool[0];
+			.slice(0, 4);
+		const next = nearest[Math.floor(env.rng() * nearest.length)] ?? available[0];
 
-		if (next === this.segment && pool.length > 1) {
-			this.facing = this.facing > 0 ? -1 : 1;
-			return;
-		}
-
+		env.claims.claim(next.line, this);
 		this.travelTarget = next;
+
 		const entryCol = Math.abs(this.col - next.start) <= Math.abs(this.col - next.end)
 			? next.start
 			: next.end;
-		const distance = Math.abs(next.line - this.line) + Math.abs(entryCol - this.col) / 12;
-		this.beginTravel(next.line, entryCol, clamp(Math.round(distance * 2.2), 4, 22));
+		this.beginTravel(next.line, entryCol, this.walkTicksTo(env, next.line, entryCol));
 		this.mode = 'travel';
+	}
+
+	/**
+	 * How long it takes to walk somewhere, derived from actual pace rather than a fixed tick
+	 * budget. A fixed budget made long hops across a gap in the code look like teleporting,
+	 * because the same number of ticks covered one line or twenty.
+	 */
+	private walkTicksTo(env: PetEnv, line: number, col: number): number {
+		const vertical = Math.abs(line - this.line) / Math.max(1e-4, env.linesPerTick);
+		// Travelling is not cleaning, so it moves a little faster than a sweep.
+		const horizontal = Math.abs(col - this.col) / Math.max(1e-4, env.charsPerTick * 1.6);
+		return Math.max(4, Math.round(Math.max(vertical, horizontal)));
 	}
 
 	private beginTravel(line: number, col: number, ticks: number): void {
@@ -313,7 +342,9 @@ export class Pet {
 
 	private advanceTravel(): void {
 		this.travelTick++;
-		const t = easeInOut(Math.min(1, this.travelTick / this.travelTicks));
+		// Linear: walking is a steady pace. Easing here made the middle of a long walk
+		// accelerate, which is what read as a jump.
+		const t = Math.min(1, this.travelTick / this.travelTicks);
 		this.line = this.travelFrom.line + (this.travelTo.line - this.travelFrom.line) * t;
 		this.col = this.travelFrom.col + (this.travelTo.col - this.travelFrom.col) * t;
 	}
@@ -445,10 +476,6 @@ function easeOutCubic(t: number): number {
 
 function easeInCubic(t: number): number {
 	return t * t * t;
-}
-
-function easeInOut(t: number): number {
-	return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
 }
 
 /** Every sprite spec a roster could ask for, so assets can be pre-resolved before a run. */

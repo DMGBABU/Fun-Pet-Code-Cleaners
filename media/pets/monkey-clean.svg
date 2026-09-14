@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Scrubbing with a hand brush — quick, short strokes rather than a long sweep. -->
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+                      values="0 0; 1.5 0.8; 0 0" dur="0.42s" repeatCount="indefinite"/>
+
+    <path d="M13 44 Q0 40 3 26" stroke="#a16207" stroke-width="4.5" fill="none" stroke-linecap="round">
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-10 26 44; 8 26 44; -10 26 44" dur="1.2s" repeatCount="indefinite"/>
+    </path>
+
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 0; 7 4; 0 0" dur="0.42s" repeatCount="indefinite"/>
+      <rect x="38" y="30" width="9" height="18" rx="4.5" fill="#854d0e" transform="rotate(26 42 39)"/>
+      <rect x="42" y="45" width="20" height="8" rx="3" fill="#ef4444" transform="rotate(20 52 49)"/>
+      <path d="M44 53 L45 59 M49 55 L50 61 M54 57 L55 62"
+            stroke="#fca5a5" stroke-width="2" stroke-linecap="round"/>
+    </g>
+
+    <rect x="16" y="50" width="10" height="13" rx="5" fill="#854d0e"/>
+    <rect x="30" y="50" width="10" height="13" rx="5" fill="#854d0e"/>
+
+    <ellipse cx="28" cy="42" rx="16" ry="15" fill="#a16207"/>
+    <ellipse cx="28" cy="46" rx="10" ry="9.5" fill="#fcd34d"/>
+
+    <circle cx="13" cy="20" r="6.8" fill="#a16207"/>
+    <circle cx="13" cy="20" r="3.5" fill="#f9a8a8"/>
+    <circle cx="43" cy="20" r="6.8" fill="#a16207"/>
+    <circle cx="43" cy="20" r="3.5" fill="#f9a8a8"/>
+
+    <circle cx="28" cy="19" r="13.8" fill="#a16207"/>
+    <ellipse cx="28" cy="22" rx="10.3" ry="9.8" fill="#fcd34d"/>
+    <circle cx="23.5" cy="17" r="2.3" fill="#1c1917"/>
+    <circle cx="32.5" cy="17" r="2.3" fill="#1c1917"/>
+    <circle cx="24.3" cy="16.1" r="0.8" fill="#ffffff"/>
+    <circle cx="33.3" cy="16.1" r="0.8" fill="#ffffff"/>
+    <ellipse cx="28" cy="24" rx="2.6" ry="1.9" fill="#78350f"/>
+    <path d="M24 27.5 Q28 31 32 27.5" stroke="#78350f" stroke-width="1.7"
+          fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

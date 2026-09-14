@@ -85,11 +85,16 @@
           "default": [],
           "items": {
             "type": "string",
-            "enum": ["penguin", "cat", "robot"],
+            "enum": ["penguin", "cat", "robot", "bear", "panda", "monkey", "gorilla", "janitor"],
             "enumDescriptions": [
               "Penguin with a broom",
               "Cat with a feather duster",
-              "Robot with a squeegee"
+              "Robot with a squeegee",
+              "Bear with a mop",
+              "Panda with a bamboo besom",
+              "Monkey with a scrubbing brush",
+              "Gorilla with a push broom",
+              "Janitor with a spray bottle and cloth"
             ]
           },
           "uniqueItems": true,
@@ -139,11 +144,19 @@
         },
         "petScreensaver.speed": {
           "type": "number",
-          "default": 6,
+          "default": 3,
           "minimum": 0.5,
           "maximum": 60,
           "description": "How fast pets sweep, in characters per second. Low values look unhurried and deliberate.",
           "order": 9
+        },
+        "petScreensaver.travelSpeed": {
+          "type": "number",
+          "default": 2,
+          "minimum": 0.2,
+          "maximum": 30,
+          "markdownDescription": "How fast pets walk between lines, in lines per second. This is what makes a pet cross a gap in your code on foot rather than appearing to jump — lower it to make the walk more deliberate.",
+          "order": 10
         },
         "petScreensaver.exitAnimation": {
           "type": "boolean",

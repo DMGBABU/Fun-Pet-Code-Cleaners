@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+                      values="0 0; 0 -1.5; 0 0" dur="0.56s" repeatCount="indefinite"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-22 28 44; 20 28 44; -22 28 44" dur="0.56s" repeatCount="indefinite"/>
+      <rect x="24" y="43" width="9" height="17" rx="4.5" fill="#1d4ed8"/>
+      <rect x="23" y="57" width="11" height="6" rx="2.5" fill="#1c1917"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="20 36 44; -22 36 44" dur="0.56s" repeatCount="indefinite"/>
+      <rect x="32" y="43" width="9" height="17" rx="4.5" fill="#2563eb"/>
+      <rect x="31" y="57" width="11" height="6" rx="2.5" fill="#292524"/>
+    </g>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="24 22 28; -20 22 28; 24 22 28" dur="0.56s" repeatCount="indefinite"/>
+      <rect x="18" y="27" width="8" height="17" rx="4" fill="#f8fafc"/>
+      <circle cx="22" cy="45" r="4" fill="#e8b08a"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-24 42 28; 20 42 28; -24 42 28" dur="0.56s" repeatCount="indefinite"/>
+      <rect x="38" y="27" width="8" height="17" rx="4" fill="#f8fafc"/>
+      <circle cx="42" cy="45" r="4" fill="#e8b08a"/>
+    </g>
+
+    <rect x="22" y="24" width="20" height="24" rx="6" fill="#2563eb"/>
+    <rect x="27" y="24" width="10" height="10" rx="2" fill="#1d4ed8"/>
+    <rect x="25" y="36" width="8" height="7" rx="2" fill="#1e40af"/>
+
+    <circle cx="32" cy="14" r="11" fill="#e8b08a"/>
+    <path d="M21 12 Q32 2 43 12 L43 9 Q32 0 21 9 Z" fill="#78350f"/>
+    <rect x="19" y="8" width="26" height="6" rx="3" fill="#1e3a8a"/>
+    <rect x="18" y="12" width="16" height="3" rx="1.5" fill="#1d4ed8"/>
+    <circle cx="28" cy="16" r="1.9" fill="#1c1917"/>
+    <circle cx="36" cy="16" r="1.9" fill="#1c1917"/>
+    <circle cx="28.7" cy="15.3" r="0.7" fill="#ffffff"/>
+    <circle cx="36.7" cy="15.3" r="0.7" fill="#ffffff"/>
+    <path d="M29 20.5 Q32 23 35 20.5" stroke="#b45309" stroke-width="1.5"
+          fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

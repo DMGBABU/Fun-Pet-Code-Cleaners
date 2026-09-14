@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- In a window-washer's harness, holding the line overhead. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-8 32 2; 8 32 2; -8 32 2" dur="2s" repeatCount="indefinite"/>
+
+    <line x1="32" y1="0" x2="32" y2="12" stroke="#a8a29e" stroke-width="3" stroke-linecap="round"/>
+    <circle cx="28" cy="13" r="4.2" fill="#e8b08a"/>
+    <circle cx="36" cy="13" r="4.2" fill="#e8b08a"/>
+
+    <rect x="24" y="13" width="8" height="18" rx="4" fill="#f8fafc" transform="rotate(10 28 22)"/>
+    <rect x="32" y="13" width="8" height="18" rx="4" fill="#f8fafc" transform="rotate(-10 36 22)"/>
+
+    <rect x="22" y="29" width="20" height="25" rx="6" fill="#2563eb"/>
+    <rect x="27" y="29" width="10" height="10" rx="2" fill="#1d4ed8"/>
+    <rect x="20" y="38" width="24" height="4" rx="2" fill="#f59e0b"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-13 32 54; 13 32 54; -13 32 54" dur="1s" repeatCount="indefinite"/>
+      <rect x="23" y="52" width="9" height="12" rx="4.5" fill="#1d4ed8"/>
+      <rect x="33" y="52" width="9" height="12" rx="4.5" fill="#2563eb"/>
+    </g>
+
+    <circle cx="32" cy="24" r="10.5" fill="#e8b08a"/>
+    <path d="M22 22 Q32 13 42 22 L42 19 Q32 11 22 19 Z" fill="#78350f"/>
+    <rect x="20" y="18" width="24" height="6" rx="3" fill="#1e3a8a"/>
+    <circle cx="28.5" cy="26" r="1.8" fill="#1c1917"/>
+    <circle cx="35.5" cy="26" r="1.8" fill="#1c1917"/>
+    <circle cx="29.2" cy="25.3" r="0.7" fill="#ffffff"/>
+    <circle cx="36.2" cy="25.3" r="0.7" fill="#ffffff"/>
+    <path d="M29 30 Q32 32.5 35 30" stroke="#b45309" stroke-width="1.5"
+          fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

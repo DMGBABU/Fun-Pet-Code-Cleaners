@@ -4,7 +4,7 @@ import { EntranceKind, PetConfig, readConfig, resolveLineHeight, resolvePetSize,
 import { SpritePool } from './decorations';
 import { Pet, PetEnv, spriteSpecsFor } from './pet';
 import { PetSpecies, resolveRoster } from './pets';
-import { CleanLedger, CodeSegment, scanTerrain } from './terrain';
+import { CleanLedger, CodeSegment, scanTerrain, SegmentClaims } from './terrain';
 
 type Timer = ReturnType<typeof setTimeout>;
 
@@ -34,6 +34,7 @@ export class Screensaver implements vscode.Disposable {
 	private roster: PetSpecies[] = [];
 	private terrain: CodeSegment[] = [];
 	private ledger?: CleanLedger;
+	private readonly claims = new SegmentClaims();
 	private uris = new Map<string, vscode.Uri>();
 
 	private cfg: PetConfig = readConfig();
@@ -80,6 +81,7 @@ export class Screensaver implements vscode.Disposable {
 		this.roster = roster;
 		this.uris = uris;
 		this.ledger = new CleanLedger(terrain);
+		this.claims.clear();
 		this.metrics = computeMetrics(cfg);
 		this.interrupted = false;
 		this.exitTicks = 0;
@@ -121,8 +123,9 @@ export class Screensaver implements vscode.Disposable {
 			return;
 		}
 
+		const env = this.env();
 		for (const pet of this.pets) {
-			pet.beginExit();
+			pet.beginExit(env);
 		}
 	}
 
@@ -144,6 +147,7 @@ export class Screensaver implements vscode.Disposable {
 
 		this.pets = [];
 		this.ledger = undefined;
+		this.claims.clear();
 		this.terrain = [];
 		this.interrupted = false;
 		this.respawnIn = 0;
@@ -169,6 +173,7 @@ export class Screensaver implements vscode.Disposable {
 			this.pool.commit(editor);
 			if (this.respawnIn === 0) {
 				this.ledger?.clear();
+				this.claims.clear();
 				this.clearWipe();
 				this.spawnCrew();
 			}
@@ -206,7 +211,7 @@ export class Screensaver implements vscode.Disposable {
 		} else if (this.ledger?.allClean && this.pets.some(p => !p.isDone)) {
 			// Everything on screen is spotless — the crew packs up on its own.
 			for (const pet of this.pets) {
-				pet.beginExit();
+				pet.beginExit(env);
 			}
 		}
 
@@ -221,26 +226,36 @@ export class Screensaver implements vscode.Disposable {
 	}
 
 	private env(): PetEnv {
+		const ticksPerSecond = 1000 / TICK_MS;
 		return {
 			terrain: this.terrain,
 			ledger: this.ledger!,
-			charsPerTick: this.cfg.speed / (1000 / TICK_MS),
+			claims: this.claims,
+			charsPerTick: this.cfg.speed / ticksPerSecond,
+			linesPerTick: this.cfg.travelSpeed / ticksPerSecond,
 			rng: Math.random
 		};
 	}
 
 	private spawnCrew(): void {
-		const count = randomInt(this.cfg.minPets, this.cfg.maxPets);
+		// Never more pets than there are lines to work, or they would collide immediately.
+		const count = Math.min(randomInt(this.cfg.minPets, this.cfg.maxPets), this.terrain.length);
 		const env = this.env();
 		const topLine = this.terrain[0]?.line ?? 0;
 
+		// Draw starting lines without replacement so no two pets begin on the same one.
+		const available = shuffle([...this.terrain]);
+
 		this.pets = [];
 		for (let i = 0; i < count; i++) {
+			const segment = available[i];
+			if (!segment) {
+				break;
+			}
+
 			const species = pick(this.roster);
 			const allowed = species.entrances.filter(e => this.cfg.entrances.includes(e));
 			let entrance: EntranceKind = allowed.length > 0 ? pick(allowed) : 'edge';
-
-			const segment = pick(this.terrain);
 
 			// Ladders and ropes need room above the touchdown line to be visible at all.
 			if ((entrance === 'ladder' || entrance === 'abseil') && segment.line - HEADROOM_LINES < topLine) {
@@ -280,4 +295,12 @@ function pick<T>(items: T[]): T {
 
 function randomInt(min: number, max: number): number {
 	return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+function shuffle<T>(items: T[]): T[] {
+	for (let i = items.length - 1; i > 0; i--) {
+		const j = Math.floor(Math.random() * (i + 1));
+		[items[i], items[j]] = [items[j], items[i]];
+	}
+	return items;
 }

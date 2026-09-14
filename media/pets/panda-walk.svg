@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-4 32 60; 4 32 60; -4 32 60" dur="0.64s" repeatCount="indefinite"/>
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 0; 0 -4; 0 0" dur="0.32s" repeatCount="indefinite"/>
+      <rect x="16" y="50" width="13" height="13" rx="6" fill="#1f2937"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 -4; 0 0; 0 -4" dur="0.32s" repeatCount="indefinite"/>
+      <rect x="35" y="50" width="13" height="13" rx="6" fill="#1f2937"/>
+    </g>
+
+    <ellipse cx="32" cy="41" rx="20" ry="17" fill="#f8fafc"/>
+    <path d="M12 38 Q32 30 52 38 Q32 34 12 38 Z" fill="#e2e8f0"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-16 12 34; 12 12 34; -16 12 34" dur="0.64s" repeatCount="indefinite"/>
+      <rect x="5" y="32" width="11" height="18" rx="5.5" fill="#1f2937"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="16 52 34; -12 52 34; 16 52 34" dur="0.64s" repeatCount="indefinite"/>
+      <rect x="48" y="32" width="11" height="18" rx="5.5" fill="#1f2937"/>
+    </g>
+
+    <circle cx="18" cy="9" r="7" fill="#1f2937"/>
+    <circle cx="46" cy="9" r="7" fill="#1f2937"/>
+
+    <circle cx="32" cy="19" r="15" fill="#f8fafc"/>
+    <ellipse cx="24.5" cy="16" rx="5.4" ry="6.4" fill="#1f2937" transform="rotate(-16 24.5 16)"/>
+    <ellipse cx="39.5" cy="16" rx="5.4" ry="6.4" fill="#1f2937" transform="rotate(16 39.5 16)"/>
+    <circle cx="24.5" cy="16" r="2.2" fill="#f8fafc"/>
+    <circle cx="39.5" cy="16" r="2.2" fill="#f8fafc"/>
+    <circle cx="24.5" cy="16" r="1.1" fill="#111827"/>
+    <circle cx="39.5" cy="16" r="1.1" fill="#111827"/>
+    <ellipse cx="32" cy="25" rx="4.2" ry="3.2" fill="#1f2937"/>
+    <path d="M32 28 Q29 31 27 29 M32 28 Q35 31 37 29" stroke="#1f2937" stroke-width="1.5"
+          fill="none" stroke-linecap="round"/>
+  </g>
+</svg>

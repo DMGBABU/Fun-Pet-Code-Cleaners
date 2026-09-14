@@ -32,6 +32,7 @@ export interface PetConfig {
 
 	petSize: number;
 	speed: number;
+	travelSpeed: number;
 	entrances: EntranceKind[];
 
 	wipeEffect: boolean;
@@ -62,7 +63,8 @@ export function readConfig(): PetConfig {
 		maxPets,
 
 		petSize: Math.max(0, c.get<number>('petSize', 0)),
-		speed: clamp(c.get<number>('speed', 6), 0.5, 60),
+		speed: clamp(c.get<number>('speed', 3), 0.5, 60),
+		travelSpeed: clamp(c.get<number>('travelSpeed', 2), 0.2, 30),
 		entrances: entrances.length > 0 ? entrances : ALL_ENTRANCES,
 
 		wipeEffect: c.get<boolean>('wipeEffect', true),

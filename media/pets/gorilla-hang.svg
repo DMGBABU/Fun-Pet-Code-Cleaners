@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-6 32 2; 6 32 2; -6 32 2" dur="2.4s" repeatCount="indefinite"/>
+
+    <line x1="32" y1="0" x2="32" y2="11" stroke="#a8a29e" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="32" cy="12" rx="7.5" ry="4.6" fill="#4b5563"/>
+
+    <rect x="19" y="10" width="13" height="24" rx="6.5" fill="#1f2937" transform="rotate(12 25 22)"/>
+    <rect x="33" y="10" width="13" height="24" rx="6.5" fill="#1f2937" transform="rotate(-12 39 22)"/>
+
+    <circle cx="18" cy="26" r="4.8" fill="#374151"/>
+    <circle cx="46" cy="26" r="4.8" fill="#374151"/>
+
+    <path d="M15 36 Q32 24 49 36 Q49 54 32 57 Q15 54 15 36 Z" fill="#374151"/>
+    <ellipse cx="32" cy="45" rx="11" ry="11" fill="#4b5563"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-10 32 54; 10 32 54; -10 32 54" dur="1.2s" repeatCount="indefinite"/>
+      <rect x="18" y="53" width="12" height="11" rx="5.5" fill="#1f2937"/>
+      <rect x="34" y="53" width="12" height="11" rx="5.5" fill="#1f2937"/>
+    </g>
+
+    <ellipse cx="32" cy="28" rx="13" ry="12" fill="#374151"/>
+    <path d="M21 22 Q32 15 43 22 Q32 18 21 22 Z" fill="#1f2937"/>
+    <ellipse cx="32" cy="33" rx="8.8" ry="6.6" fill="#6b7280"/>
+    <ellipse cx="29.5" cy="32" rx="1.4" ry="1.8" fill="#1f2937"/>
+    <ellipse cx="34.5" cy="32" rx="1.4" ry="1.8" fill="#1f2937"/>
+    <circle cx="27" cy="26" r="2.2" fill="#111827"/>
+    <circle cx="37" cy="26" r="2.2" fill="#111827"/>
+    <circle cx="27.8" cy="25.2" r="0.8" fill="#ffffff"/>
+    <circle cx="37.8" cy="25.2" r="0.8" fill="#ffffff"/>
+  </g>
+</svg>
