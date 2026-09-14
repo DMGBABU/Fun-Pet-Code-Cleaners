@@ -29,7 +29,7 @@ Press **F5** for the Extension Development Host, then run **`Pet Screensaver: St
 | `idleTimeout` | `60` | Seconds of inactivity before pets arrive |
 | `enabled` | `true` | Idle activation. `Start Now` works regardless |
 | `pets` | `[]` | Which bundled pets can appear. Empty means all |
-| `minPets` / `maxPets` | `2` / `4` | A random count in this range turns up each round |
+| `minPets` / `maxPets` | `5` / `8` | A random count in this range turns up each round, capped by lines on screen |
 | `entrances` | all four | `door`, `ladder`, `abseil`, `edge` |
 | `petSize` | `0` | Pixels. `0` matches your line height |
 | `speed` | `3` | Characters per second while sweeping |
@@ -92,6 +92,8 @@ Eight bundled pets, each hand-animated across five states:
 | Janitor | Spray bottle and cloth |
 
 Pick a subset with **`Pet Screensaver: Choose Pets`**.
+
+Species are dealt from a shuffled bag rather than picked independently per pet, so a crew is a mix rather than the same animal five times over. Every species appears once before any repeats.
 
 ## How it works
 

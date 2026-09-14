@@ -246,6 +246,17 @@ export class Screensaver implements vscode.Disposable {
 		// Draw starting lines without replacement so no two pets begin on the same one.
 		const available = shuffle([...this.terrain]);
 
+		// A shuffle bag rather than an independent random pick per pet: picking independently
+		// throws up duplicates constantly, so a crew of five would often be three penguins.
+		// This guarantees every species appears once before any repeats.
+		let bag: PetSpecies[] = [];
+		const nextSpecies = (): PetSpecies => {
+			if (bag.length === 0) {
+				bag = shuffle([...this.roster]);
+			}
+			return bag.pop()!;
+		};
+
 		this.pets = [];
 		for (let i = 0; i < count; i++) {
 			const segment = available[i];
@@ -253,7 +264,7 @@ export class Screensaver implements vscode.Disposable {
 				break;
 			}
 
-			const species = pick(this.roster);
+			const species = nextSpecies();
 			const allowed = species.entrances.filter(e => this.cfg.entrances.includes(e));
 			let entrance: EntranceKind = allowed.length > 0 ? pick(allowed) : 'edge';
 

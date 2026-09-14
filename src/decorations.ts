@@ -23,8 +23,12 @@ const DX_STEP = 2;
 const DY_STEP = 2;
 const OPACITY_STEP = 0.1;
 
-/** Refuse to grow past this many rules; a runaway pool would bloat the editor stylesheet. */
-const MAX_POOL = 600;
+/**
+ * Refuse to grow past this many rules; a runaway pool would bloat the editor stylesheet.
+ * A full crew of eight species across five states, both facings and the sub-character offsets
+ * lands comfortably under this. Everything is disposed when the screensaver stops.
+ */
+const MAX_POOL = 1200;
 
 /**
  * Builds and reuses the decoration types that draw sprites.

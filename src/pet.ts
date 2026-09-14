@@ -61,6 +61,8 @@ export class Pet {
 	/** Where it came in, and therefore where it must go back to. */
 	private readonly anchorLine: number;
 	private readonly anchorCol: number;
+	/** Where the exit choreography begins — the top of the ladder, not its foot. */
+	private readonly homeLine: number;
 	private readonly edgeSign: 1 | -1;
 
 	private mode: 'sweep' | 'travel' = 'sweep';
@@ -87,10 +89,11 @@ export class Pet {
 		this.col = this.anchorCol;
 		this.edgeSign = env.rng() < 0.5 ? -1 : 1;
 
-		// Ladder and abseil deliver the pet above where it touched down.
-		if (entrance === 'ladder') {
-			this.line = this.anchorLine;
-		} else if (entrance === 'abseil') {
+		// A ladder sets the pet down at its top, several lines above the foot; every other
+		// entrance leaves it on the anchor line. The exit has to start from the same place.
+		this.homeLine = entrance === 'ladder' ? this.anchorLine - (LADDER_LINES - 1) : this.anchorLine;
+
+		if (entrance === 'abseil') {
 			this.line = this.anchorLine - (ABSEIL_LINES - 1);
 		}
 	}
@@ -106,7 +109,7 @@ export class Pet {
 	tick(env: PetEnv): void {
 		switch (this.phase) {
 			case 'entering':
-				this.tickEntering();
+				this.tickEntering(env);
 				break;
 			case 'cleaning':
 				this.tickCleaning(env);
@@ -131,11 +134,12 @@ export class Pet {
 		this.phase = 'returning';
 		this.phaseTick = 0;
 		// Deliberately a fixed brisk budget rather than walking pace: the user is back and
-		// waiting, so the pet hurries home however far away it was.
-		this.beginTravel(this.anchorLine, this.anchorCol, RETURN_MAX_TICKS);
+		// waiting, so the pet hurries home however far away it was. It heads for `homeLine`,
+		// which for a ladder is the top rung the exit animation descends from.
+		this.beginTravel(this.homeLine, this.anchorCol, RETURN_MAX_TICKS);
 	}
 
-	private tickEntering(): void {
+	private tickEntering(env: PetEnv): void {
 		const total = ENTER_TICKS[this.entrance];
 		const t = Math.min(1, this.phaseTick / total);
 
@@ -177,11 +181,36 @@ export class Pet {
 			this.opacity = 1;
 			this.propOpacity = 0;
 			this.dxPx = 0;
-			this.line = Math.round(this.line);
+			this.settleAfterEntrance(env);
 			this.phase = 'cleaning';
 			this.mode = 'sweep';
 			this.phaseTick = 0;
 		}
+	}
+
+	/**
+	 * Re-binds the pet to whatever line it is actually standing on.
+	 *
+	 * An entrance can move it: a ladder leaves it several lines above the one it was created
+	 * for. Without this the pet would sweep its original line while standing somewhere else,
+	 * so the dimming would appear detached from the pet doing it.
+	 */
+	private settleAfterEntrance(env: PetEnv): void {
+		this.line = Math.round(this.line);
+
+		if (this.segment) {
+			env.claims.release(this.segment.line, this);
+			this.segment = undefined;
+		}
+
+		const landed = env.terrain.find(s => s.line === this.line);
+		if (landed && env.claims.isAvailable(landed.line, this)) {
+			env.claims.claim(landed.line, this);
+			this.segment = landed;
+			this.col = clamp(this.col, landed.start, landed.end);
+		}
+		// Landed on a blank line, or someone already has it: leave `segment` unset and let
+		// tickCleaning walk this pet to real work.
 	}
 
 	private tickCleaning(env: PetEnv): void {
@@ -228,7 +257,7 @@ export class Pet {
 		this.phaseTick++;
 		const arrived = this.travelTick >= this.travelTicks;
 		if (arrived || this.phaseTick >= RETURN_MAX_TICKS) {
-			this.line = this.anchorLine;
+			this.line = this.homeLine;
 			this.col = this.anchorCol;
 			this.phase = 'leaving';
 			this.phaseTick = 0;

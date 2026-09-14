@@ -45,8 +45,8 @@ export interface PetConfig {
 export function readConfig(): PetConfig {
 	const c = vscode.workspace.getConfiguration(CONFIG_SECTION);
 
-	const minPets = clamp(c.get<number>('minPets', 2), 1, 8);
-	const maxPets = clamp(c.get<number>('maxPets', 4), minPets, 8);
+	const minPets = clamp(c.get<number>('minPets', 5), 1, 12);
+	const maxPets = clamp(c.get<number>('maxPets', 8), minPets, 12);
 
 	const entrances = c.get<string[]>('entrances', ALL_ENTRANCES)
 		.filter((e): e is EntranceKind => (ALL_ENTRANCES as string[]).includes(e));
