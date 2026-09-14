@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- A loopy doodle that draws itself on, then holds. -->
+  <path d="M8 44 Q16 18 26 38 Q34 54 42 30 Q48 14 58 34"
+        stroke="#f472b6" stroke-width="5" fill="none" stroke-linecap="round">
+    <animate attributeName="stroke-dasharray" values="0 140; 140 0" dur="0.9s" fill="freeze"/>
+  </path>
+</svg>

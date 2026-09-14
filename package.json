@@ -5,6 +5,19 @@
   "version": "0.1.0",
   "publisher": "dmgbabu",
   "license": "MIT",
+  "icon": "media/icon.png",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/DMGBABU/Fun-Pet-Code-Cleaners.git"
+  },
+  "bugs": {
+    "url": "https://github.com/DMGBABU/Fun-Pet-Code-Cleaners/issues"
+  },
+  "homepage": "https://github.com/DMGBABU/Fun-Pet-Code-Cleaners#readme",
+  "galleryBanner": {
+    "color": "#0284c7",
+    "theme": "dark"
+  },
   "engines": {
     "vscode": "^1.100.0"
   },
@@ -35,6 +48,11 @@
         "category": "Pet Screensaver"
       },
       {
+        "command": "petScreensaver.pickPets",
+        "title": "Pet Screensaver: Choose Pets",
+        "category": "Pet Screensaver"
+      },
+      {
         "command": "petScreensaver.clearAssetCache",
         "title": "Pet Screensaver: Clear Downloaded Asset Cache",
         "category": "Pet Screensaver"
@@ -62,35 +80,124 @@
           "description": "Enable the idle screensaver. When off, the pet only appears via the 'Start Now' command.",
           "order": 3
         },
+        "petScreensaver.pets": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string",
+            "enum": ["penguin", "cat", "robot", "bear", "panda", "monkey", "gorilla", "janitor"],
+            "enumDescriptions": [
+              "Penguin with a broom",
+              "Cat with a feather duster",
+              "Robot with a squeegee",
+              "Bear with a mop",
+              "Panda with a bamboo besom",
+              "Monkey with a scrubbing brush",
+              "Gorilla with a push broom",
+              "Janitor with a spray bottle and cloth"
+            ]
+          },
+          "uniqueItems": true,
+          "markdownDescription": "Which bundled pets can join the crew. Leave empty for all of them. The **Pet Screensaver: Choose Pets** command edits this for you.",
+          "order": 4
+        },
+        "petScreensaver.minPets": {
+          "type": "number",
+          "default": 5,
+          "minimum": 1,
+          "maximum": 12,
+          "markdownDescription": "Fewest pets that can turn up at once. Capped by how many lines of code are on screen, since each pet works its own line.",
+          "order": 5
+        },
+        "petScreensaver.maxPets": {
+          "type": "number",
+          "default": 8,
+          "minimum": 1,
+          "maximum": 12,
+          "description": "Most pets that can turn up at once. Each run picks a random number in this range, and species are dealt from a shuffled bag so you get a mix rather than repeats.",
+          "order": 6
+        },
+        "petScreensaver.entrances": {
+          "type": "array",
+          "default": ["door", "ladder", "abseil", "edge"],
+          "items": {
+            "type": "string",
+            "enum": ["door", "ladder", "abseil", "edge"],
+            "enumDescriptions": [
+              "A door opens on a line and the pet steps out",
+              "A ladder leans against the code and the pet climbs up",
+              "The pet drops in on a rope, window-washer style",
+              "The pet scurries in from the side of the screen"
+            ]
+          },
+          "uniqueItems": true,
+          "markdownDescription": "How pets arrive. Each pet leaves the same way it came in.",
+          "order": 7
+        },
         "petScreensaver.petSize": {
           "type": "number",
-          "default": 28,
-          "minimum": 8,
+          "default": 0,
+          "minimum": 0,
           "maximum": 256,
-          "markdownDescription": "Height and width of the pet, in pixels. Some builds of Chromium ignore sizing on decoration images — if the pet renders at its natural size, resize the source asset instead.",
-          "order": 4
+          "markdownDescription": "Pet height in pixels. Leave at `0` to match your editor's line height, which keeps pets small and cute.\n\nSome builds of Chromium ignore sizing on decoration images — if a pet renders at its natural size, resize the source asset instead.",
+          "order": 8
         },
         "petScreensaver.speed": {
           "type": "number",
-          "default": 28,
-          "minimum": 1,
-          "maximum": 200,
-          "description": "How fast the pet crawls, in characters per second.",
-          "order": 5
+          "default": 3,
+          "minimum": 0.5,
+          "maximum": 60,
+          "description": "How fast pets sweep, in characters per second. Low values look unhurried and deliberate.",
+          "order": 9
         },
-        "petScreensaver.sweepWidth": {
+        "petScreensaver.travelSpeed": {
           "type": "number",
-          "default": 100,
-          "minimum": 10,
-          "maximum": 500,
-          "description": "How many columns wide each sweep is before the pet drops to the next line.",
-          "order": 6
+          "default": 2,
+          "minimum": 0.2,
+          "maximum": 30,
+          "markdownDescription": "How fast pets walk between lines, in lines per second. This is what makes a pet cross a gap in your code on foot rather than appearing to jump — lower it to make the walk more deliberate.",
+          "order": 10
+        },
+        "petScreensaver.exitAnimation": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "When you come back, let pets run home and leave the way they arrived. The dimming clears instantly either way — only the pets linger, for about a second. Turn off to have everything vanish on the first keystroke.",
+          "order": 10
+        },
+        "petScreensaver.customPets": {
+          "type": "array",
+          "default": [],
+          "markdownDescription": "Your own pets. Each entry needs an `id` and a `sprites.clean` image; `walk`, `run`, `climb` and `hang` are optional and fall back to `clean`.\n\nValues can be http(s) URLs or absolute local paths. Animated GIFs and animated SVGs both work.\n\n```json\n{\n  \"id\": \"my-pet\",\n  \"label\": \"My Pet\",\n  \"sprites\": { \"clean\": \"https://example.com/sweep.gif\" },\n  \"entrances\": [\"edge\"]\n}\n```",
+          "items": {
+            "type": "object",
+            "required": ["id", "sprites"],
+            "properties": {
+              "id": { "type": "string" },
+              "label": { "type": "string" },
+              "sprites": {
+                "type": "object",
+                "required": ["clean"],
+                "properties": {
+                  "clean": { "type": "string" },
+                  "walk": { "type": "string" },
+                  "run": { "type": "string" },
+                  "climb": { "type": "string" },
+                  "hang": { "type": "string" }
+                }
+              },
+              "entrances": {
+                "type": "array",
+                "items": { "type": "string", "enum": ["door", "ladder", "abseil", "edge"] }
+              }
+            }
+          },
+          "order": 11
         },
         "petScreensaver.wipeEffect": {
           "type": "boolean",
           "default": true,
-          "description": "Fade out code as the pet sweeps over it, and restore it on the way back. Purely visual — your file is never modified.",
-          "order": 7
+          "description": "Fade out code as pets sweep over it. Purely visual — your file is never modified.",
+          "order": 12
         },
         "petScreensaver.wipeOpacity": {
           "type": "number",
@@ -98,14 +205,14 @@
           "minimum": 0,
           "maximum": 1,
           "description": "How faint swept code becomes when the wipe effect is on. 0 is invisible, 1 is untouched.",
-          "order": 8
+          "order": 13
         },
         "petScreensaver.lineHeightOverride": {
           "type": "number",
           "default": 0,
           "minimum": 0,
-          "description": "Editor line height in pixels, used to centre the pet vertically. Leave at 0 to derive it automatically from your editor font settings.",
-          "order": 9
+          "description": "Editor line height in pixels, used to size and centre pets. Leave at 0 to derive it automatically from your editor font settings.",
+          "order": 14
         }
       }
     }
@@ -113,11 +220,16 @@
   "scripts": {
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./"
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish",
+    "publish:openvsx": "ovsx publish"
   },
   "devDependencies": {
     "@types/node": "^22.10.0",
     "@types/vscode": "^1.100.0",
+    "@vscode/vsce": "^3.2.1",
+    "ovsx": "^0.10.1",
     "typescript": "^5.7.2"
   }
 }

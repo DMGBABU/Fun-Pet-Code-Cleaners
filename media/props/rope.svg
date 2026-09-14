@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 100">
+  <!-- Window-washer rig: the pet drops in on this and is hauled back up on the way out. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-1.6 16 0; 1.6 16 0; -1.6 16 0" dur="2.8s" repeatCount="indefinite"/>
+    <line x1="16" y1="0" x2="16" y2="84" stroke="#a8a29e" stroke-width="3" stroke-linecap="round"/>
+    <path d="M16 6 L20 14 L16 22 L12 30 L16 38 L20 46 L16 54 L12 62 L16 70"
+          stroke="#d6d3d1" stroke-width="1.2" fill="none" opacity="0.7"/>
+    <path d="M11 84 Q16 78 21 84 L23 96 Q16 100 9 96 Z" fill="#0ea5e9"/>
+    <ellipse cx="16" cy="84" rx="6" ry="2.4" fill="#38bdf8"/>
+    <path d="M10 88 Q16 92 22 88" stroke="#e0f2fe" stroke-width="1.6" fill="none"/>
+  </g>
+</svg>

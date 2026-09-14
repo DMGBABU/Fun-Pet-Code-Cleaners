@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Up on its hind legs, working a feather duster in a flicking arc. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-3 26 60; 4 26 60; -3 26 60" dur="0.62s" repeatCount="indefinite"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-30 40 30; 24 40 30; -30 40 30" dur="0.62s" repeatCount="indefinite"/>
+      <line x1="40" y1="30" x2="50" y2="46" stroke="#7c3aed" stroke-width="3.6" stroke-linecap="round"/>
+      <ellipse cx="53" cy="52" rx="8.5" ry="10" fill="#c4b5fd"/>
+      <ellipse cx="51" cy="50" rx="5.5" ry="7" fill="#ddd6fe"/>
+      <path d="M59 47 L64 43 M60 53 L64 53 M58 58 L62 62"
+            stroke="#c4b5fd" stroke-width="2.4" stroke-linecap="round"/>
+    </g>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-12 28 46; 8 28 46; -12 28 46" dur="1.3s" repeatCount="indefinite"/>
+      <path d="M14 46 Q1 42 4 26" stroke="#fb923c" stroke-width="5.5" fill="none" stroke-linecap="round"/>
+      <path d="M5 31 Q2 27 3.6 24.5" stroke="#f8fafc" stroke-width="4" fill="none" stroke-linecap="round"/>
+    </g>
+
+    <rect x="16" y="50" width="8" height="13" rx="4" fill="#ea580c"/>
+    <rect x="28" y="50" width="8" height="13" rx="4" fill="#ea580c"/>
+
+    <ellipse cx="26" cy="41" rx="17" ry="16" fill="#fb923c"/>
+    <path d="M16 32 Q26 28 36 32" stroke="#ea580c" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <ellipse cx="26" cy="47" rx="9.5" ry="8" fill="#fed7aa"/>
+    <ellipse cx="39" cy="34" rx="4.4" ry="10" fill="#fb923c" transform="rotate(26 39 34)"/>
+
+    <path d="M11 4 L12 20 L23 13 Z" fill="#fb923c"/>
+    <path d="M35 4 L34 20 L23.5 13 Z" fill="#fb923c"/>
+    <path d="M14 8 L14.6 17 L20.5 13 Z" fill="#fda4af"/>
+    <path d="M32 8 L31.4 17 L25.5 13 Z" fill="#fda4af"/>
+
+    <circle cx="23" cy="20" r="14.5" fill="#fb923c"/>
+    <ellipse cx="23" cy="25" rx="7.8" ry="5.8" fill="#fed7aa"/>
+    <circle cx="18.2" cy="18" r="2.6" fill="#14532d"/>
+    <circle cx="27.8" cy="18" r="2.6" fill="#14532d"/>
+    <circle cx="19.1" cy="17.1" r="0.9" fill="#ffffff"/>
+    <circle cx="28.7" cy="17.1" r="0.9" fill="#ffffff"/>
+    <path d="M23.2 23 L25.5 25.1 L23.2 27 L20.9 25.1 Z" fill="#be123c"/>
+  </g>
+</svg>

@@ -1,8 +1,8 @@
 # Fun Pet Code Cleaners
 
-A MobaXterm-inspired screensaver for VS Code. Go idle, and a pet crawls across your code in a serpentine path, sweeping it clean. Touch the keyboard and it's gone instantly.
+A MobaXterm-inspired screensaver for VS Code. Go idle, and a small crew of pets arrives — through a door, up a ladder, down a rope, or scurrying in from the edge — and sweeps your code clean. Come back, and they run home and leave the way they came.
 
-It renders **inside the active editor** using the native `createTextEditorDecorationType` API — no webview, no extra tab. The wipe effect is purely visual: no `TextEdit` is ever constructed, and your file is never modified.
+Everything renders **inside the active editor** using the native `createTextEditorDecorationType` API. No webview, no extra tab. The wipe effect is purely visual: no `TextEdit` is ever constructed, and your file is never modified.
 
 ## Running it
 
@@ -11,34 +11,118 @@ npm install
 npm run compile
 ```
 
-Then press **F5** to launch the Extension Development Host. Open a file and run **`Pet Screensaver: Start Now`** from the Command Palette to skip the idle wait.
+Press **F5** for the Extension Development Host, then run **`Pet Screensaver: Start Now`** to skip the idle wait.
+
+## Commands
+
+| Command | |
+|---|---|
+| `Pet Screensaver: Start Now` | Skip the idle timer |
+| `Pet Screensaver: Stop` | Clear everything immediately |
+| `Pet Screensaver: Choose Pets` | Pick which pets join the crew |
+| `Pet Screensaver: Clear Downloaded Asset Cache` | Force downloaded sprites to be re-fetched |
 
 ## Settings
 
 | Setting | Default | |
 |---|---|---|
-| `petScreensaver.cleanPetUrl` | `""` | URL (or local path) of an animated GIF with a transparent background. Empty uses the bundled penguin. |
-| `petScreensaver.idleTimeout` | `60` | Seconds of inactivity before it activates. |
-| `petScreensaver.enabled` | `true` | Idle activation. The `Start Now` command works regardless. |
-| `petScreensaver.petSize` | `28` | Pixels. |
-| `petScreensaver.speed` | `28` | Characters per second. |
-| `petScreensaver.sweepWidth` | `100` | Max sweep width in columns. Auto-shrinks to fit the visible code. |
-| `petScreensaver.wipeEffect` | `true` | Fade code out behind the pet, restore on the way back. |
-| `petScreensaver.wipeOpacity` | `0.12` | |
-| `petScreensaver.lineHeightOverride` | `0` | `0` auto-derives from your editor font. |
+| `idleTimeout` | `60` | Seconds of inactivity before pets arrive |
+| `enabled` | `true` | Idle activation. `Start Now` works regardless |
+| `pets` | `[]` | Which bundled pets can appear. Empty means all |
+| `minPets` / `maxPets` | `5` / `8` | A random count in this range turns up each round, capped by lines on screen |
+| `entrances` | all four | `door`, `ladder`, `abseil`, `edge` |
+| `petSize` | `0` | Pixels. `0` matches your line height |
+| `speed` | `3` | Characters per second while sweeping |
+| `travelSpeed` | `2` | Lines per second while walking between lines |
+| `exitAnimation` | `true` | Let pets run home and leave properly instead of vanishing |
+| `customPets` | `[]` | Your own pets — see below |
+| `cleanPetUrl` | `""` | Shortcut for a single-image custom pet |
+| `wipeEffect` / `wipeOpacity` | `true` / `0.12` | Fade code out behind the pets |
+| `lineHeightOverride` | `0` | `0` auto-derives from your editor font |
 
-## Two things to verify on first run
+## Adding your own pets
 
-VS Code compiles `contentIconPath` to `content: url(...)` rather than `background-image`, and Chromium is quirky about replaced pseudo-element content. Neither of these could be settled without running it:
+Animated GIFs and animated SVGs both work — declarative animation runs fine inside decorations.
 
-1. **Does the GIF animate?** If it renders as a static first frame, the fix is to drive frames ourselves — the tick loop already exists, so add a `frameUrls` setting and cycle one decoration type per frame.
-2. **Is `petSize` honoured?** Chromium is documented as ignoring `width`/`height` on replaced `content: url()` pseudo-elements. If the pet renders at its natural size, resize the source asset instead.
+```jsonc
+"petScreensaver.customPets": [
+  {
+    "id": "my-pet",
+    "label": "My Pet",
+    "sprites": {
+      "clean": "https://example.com/sweeping.gif",  // required
+      "walk":  "https://example.com/walking.gif"    // optional, falls back to clean
+    },
+    "entrances": ["edge"]
+  }
+]
+```
 
-Check both with **`Developer: Toggle Developer Tools`** → inspect a `.view-line` `::after` and confirm the computed `position: absolute`.
+`sprites` accepts five states — `clean`, `walk`, `run`, `climb` and `hang`. Only `clean` is required; the rest fall back to it. Each bundled pet provides all five:
+
+| State | When it plays |
+|---|---|
+| `clean` | Sweeping a line of code |
+| `walk` | Moving between lines |
+| `run` | Heading home after you come back |
+| `climb` | On the ladder |
+| `hang` | On the rope |
+
+Values can be absolute local paths instead of URLs.
+
+Remote images are downloaded once into global storage and rendered from there, because `contentIconPath` silently ignores http(s) URLs ([microsoft/vscode#11055](https://github.com/microsoft/vscode/issues/11055), open since 2016 — confusingly, `gutterIconPath` *does* follow them). Everything works offline after the first fetch.
+
+**Sprite sheets will not work as-is.** These render as CSS `content: url(...)`, which cannot crop a region of a sheet. Supply individual frames or a pre-composed animated GIF per state.
+
+Good sources: [Kenney.nl](https://kenney.nl) (CC0), [itch.io](https://itch.io/game-assets/free/tag-sprites), [OpenGameArt](https://opengameart.org), [LottieFiles](https://lottiefiles.com) (exports transparent GIF).
+
+## The crew
+
+Eight bundled pets, each hand-animated across five states:
+
+| Pet | Tool |
+|---|---|
+| Penguin | Broom |
+| Cat | Feather duster |
+| Robot | Squeegee |
+| Bear | Mop |
+| Panda | Bamboo besom |
+| Monkey | Scrubbing brush |
+| Gorilla | Push broom |
+| Janitor | Spray bottle and cloth |
+
+Pick a subset with **`Pet Screensaver: Choose Pets`**.
+
+Species are dealt from a shuffled bag rather than picked independently per pet, so a crew is a mix rather than the same animal five times over. Every species appears once before any repeats.
+
+## When the work runs out
+
+Pets do not pack up when the code is clean — they knock off and play. Each one picks at random from:
+
+| | |
+|---|---|
+| **Scribble** | Doodles a loop, a wonky star or a heart onto the code, drawn stroke by stroke |
+| **Sleep** | Lists gently to one side with Zs drifting up |
+| **Eat** | Produces a snack — bamboo, a banana, fish, honey, a battery, coffee |
+| **Dance** | Bobs side to side with music notes overhead |
+
+Which pet does what is drawn fresh every time, so the panda is not always the one eating bamboo. Pets also take the occasional short break mid-shift, so the antics show up even on a file too big to ever finish.
+
+After a while the code "gets dirty" again and the crew starts over. They only actually leave when you come back.
+
+## How it works
+
+Three decisions carry the whole design:
+
+**Pets only walk on code.** `terrain.ts` scans the visible range for the span between each line's first non-whitespace character and its end, and pets travel only along those. That keeps them out of the empty space to the right of short lines — and, usefully, guarantees every position a pet occupies has a real character beneath it. That is what allows decorations to be anchored to genuine `(line, column)` positions, with the fractional part becoming a sub-character pixel offset. Anchoring to characters is why a crew of pets costs roughly 30 CSS rules rather than thousands.
+
+**Sprites are lifted out of layout flow.** An inline `after` decoration normally occupies horizontal space and shoves the surrounding code sideways. `decorations.ts` injects `position:absolute` through `textDecoration`, which VS Code interpolates into the generated CSS rule verbatim (unlike `contentText`, which is escaped). It deliberately sets `top` but *not* `left`: an explicit `left` resolves against the containing `.view-line`, which would pin every sprite to the start of its line no matter which column it was anchored at.
+
+**One pet per line.** `SegmentClaims` in `terrain.ts` hands a line to exactly one pet. `CleanLedger.isFullyClean` already stops a pet re-sweeping a *finished* line, but two pets choosing the same dirty line at the same moment would both work it, since neither sees it as clean until one finishes. Claims are taken when a line is chosen rather than when it is reached, so the second pet looks elsewhere while the first is still walking over. Pets still walk *across* each other's lines in transit — only sweeping is exclusive.
 
 ## Known limitations
 
-- **The `position:absolute` injection is undocumented internal behaviour**, not supported API. `textDecoration` is interpolated into the generated CSS rule verbatim, which is what takes the pet out of layout flow — without it, an inline `after` decoration shoves your code sideways. This broke in VS Code 1.88 and was restored in 1.100, hence the `^1.100.0` engine floor. `Screensaver.buildPetDecoration` is the only place to repair if it regresses.
-- **Remote URLs cannot be handed to a decoration** ([microsoft/vscode#11055](https://github.com/microsoft/vscode/issues/11055), open since 2016 — confusingly, `gutterIconPath` *does* follow URLs). The extension downloads the asset once into `globalStorageUri` and renders from that cache, so it works offline afterwards. `Pet Screensaver: Clear Downloaded Asset Cache` forces a re-download.
-- **Typing in the integrated terminal raises no editor events**, so the screensaver can start over your code while you're working in the terminal. `onDidChangeActiveTerminal` covers this only partly; `Pet Screensaver: Stop` and the `enabled` switch are the escape hatches.
-- The pet sweeps the **visible viewport only**, so your scroll position is never moved.
+- **The `position:absolute` injection is undocumented internal behaviour**, not supported API. It broke in VS Code 1.88 and was restored in 1.100, hence the `^1.100.0` engine floor. `create()` in [src/decorations.ts](src/decorations.ts) is the only place to repair if it regresses.
+- **Chromium ignores `width`/`height` on replaced `content: url()` pseudo-elements** — confirmed in practice, not just in theory. Sprites are pinned to size with `max-width`/`max-height` (which *do* apply to replaced elements) plus `object-fit: contain`, and bundled SVGs ship without `width`/`height` attributes so they carry no intrinsic size. A custom GIF with an awkward aspect ratio will letterbox rather than stretch.
+- **Typing in the integrated terminal raises no editor events**, so pets can arrive while you are working in the terminal. `onDidChangeActiveTerminal` covers this only partly; `Pet Screensaver: Stop` and `enabled` are the escape hatches.
+- Pets sweep the **visible viewport only**, so your scroll position is never moved.

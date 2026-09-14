@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Leans into the stroke as the broom sweeps, and rocks back on the return. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-4 26 60; 5 26 60; -4 26 60" dur="0.8s" repeatCount="indefinite"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-26 42 30; 22 42 30; -26 42 30" dur="0.8s" repeatCount="indefinite"/>
+      <line x1="42" y1="30" x2="50" y2="52" stroke="#a16207" stroke-width="4" stroke-linecap="round"/>
+      <path d="M45 50 L62 56 L58 64 L42 58 Z" fill="#fbbf24"/>
+      <path d="M48 53 L57 57 M46 56 L55 60" stroke="#d97706" stroke-width="1.6" stroke-linecap="round"/>
+    </g>
+
+    <ellipse cx="19" cy="60" rx="6.5" ry="3.2" fill="#f59e0b"/>
+    <ellipse cx="32" cy="60" rx="6.5" ry="3.2" fill="#f59e0b"/>
+
+    <ellipse cx="25" cy="39" rx="18" ry="20" fill="#1f2937"/>
+    <ellipse cx="25" cy="42" rx="11.5" ry="14" fill="#f8fafc"/>
+
+    <ellipse cx="7" cy="38" rx="5" ry="12.5" fill="#111827" transform="rotate(-14 7 38)"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-26 42 30; 22 42 30; -26 42 30" dur="0.8s" repeatCount="indefinite"/>
+      <ellipse cx="42" cy="32" rx="4.6" ry="11" fill="#111827" transform="rotate(24 42 32)"/>
+    </g>
+
+    <circle cx="25" cy="19" r="14.5" fill="#1f2937"/>
+    <ellipse cx="26" cy="22" rx="10.5" ry="10" fill="#f8fafc"/>
+    <circle cx="21" cy="18.5" r="2.3" fill="#111827"/>
+    <circle cx="30.5" cy="18.5" r="2.3" fill="#111827"/>
+    <circle cx="21.9" cy="17.6" r="0.8" fill="#ffffff"/>
+    <circle cx="31.4" cy="17.6" r="0.8" fill="#ffffff"/>
+    <path d="M26 23 L33 26.3 L26 29.6 Z" fill="#f59e0b"/>
+  </g>
+</svg>

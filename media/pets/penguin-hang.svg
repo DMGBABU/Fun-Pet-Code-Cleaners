@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Dangling off the rig: one flipper gripping overhead, feet swinging free. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-7 32 2; 7 32 2; -7 32 2" dur="2s" repeatCount="indefinite"/>
+
+    <line x1="32" y1="0" x2="32" y2="14" stroke="#a8a29e" stroke-width="3" stroke-linecap="round"/>
+    <ellipse cx="32" cy="15" rx="5" ry="3.4" fill="#111827"/>
+
+    <ellipse cx="22" cy="24" rx="4.4" ry="11" fill="#111827" transform="rotate(28 22 24)"/>
+    <ellipse cx="46" cy="34" rx="4.4" ry="11" fill="#111827" transform="rotate(-22 46 34)"/>
+
+    <ellipse cx="33" cy="38" rx="16.5" ry="19" fill="#1f2937"/>
+    <ellipse cx="33" cy="41" rx="10.5" ry="13" fill="#f8fafc"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-12 30 52; 12 30 52; -12 30 52" dur="1s" repeatCount="indefinite"/>
+      <ellipse cx="26" cy="59" rx="6.4" ry="3.2" fill="#f59e0b"/>
+      <ellipse cx="39" cy="59" rx="6.4" ry="3.2" fill="#f59e0b"/>
+    </g>
+
+    <circle cx="33" cy="21" r="13.5" fill="#1f2937"/>
+    <ellipse cx="33" cy="24" rx="10" ry="9.5" fill="#f8fafc"/>
+    <circle cx="28.6" cy="20.5" r="2.2" fill="#111827"/>
+    <circle cx="37.6" cy="20.5" r="2.2" fill="#111827"/>
+    <circle cx="29.4" cy="19.7" r="0.8" fill="#ffffff"/>
+    <circle cx="38.4" cy="19.7" r="0.8" fill="#ffffff"/>
+    <path d="M33 25 L39.5 28 L33 31 Z" fill="#f59e0b"/>
+  </g>
+</svg>

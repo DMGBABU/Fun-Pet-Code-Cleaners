@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-7 32 32; 7 32 32; -7 32 32" dur="1.5s" repeatCount="indefinite"/>
+    <path d="M14 10 Q12 42 34 54 Q56 62 58 40 Q48 52 34 44 Q20 34 22 10 Z" fill="#fbbf24"/>
+    <path d="M18 14 Q17 40 35 50" stroke="#f59e0b" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <rect x="13" y="4" width="10" height="10" rx="3" fill="#78350f"/>
+    <ellipse cx="57" cy="42" rx="5" ry="4" fill="#a16207"/>
+  </g>
+</svg>

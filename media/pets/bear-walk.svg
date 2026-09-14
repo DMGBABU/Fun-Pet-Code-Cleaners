@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-4 32 60; 4 32 60; -4 32 60" dur="0.62s" repeatCount="indefinite"/>
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 0; 0 -4; 0 0" dur="0.31s" repeatCount="indefinite"/>
+      <rect x="16" y="50" width="13" height="13" rx="6" fill="#78350f"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 -4; 0 0; 0 -4" dur="0.31s" repeatCount="indefinite"/>
+      <rect x="35" y="50" width="13" height="13" rx="6" fill="#78350f"/>
+    </g>
+
+    <ellipse cx="32" cy="41" rx="20" ry="17" fill="#92400e"/>
+    <ellipse cx="32" cy="45" rx="12" ry="11" fill="#c2854b"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-16 12 34; 12 12 34; -16 12 34" dur="0.62s" repeatCount="indefinite"/>
+      <rect x="6" y="32" width="11" height="18" rx="5.5" fill="#78350f"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="16 52 34; -12 52 34; 16 52 34" dur="0.62s" repeatCount="indefinite"/>
+      <rect x="47" y="32" width="11" height="18" rx="5.5" fill="#78350f"/>
+    </g>
+
+    <circle cx="18" cy="9" r="7" fill="#92400e"/>
+    <circle cx="18" cy="9" r="3.4" fill="#c2854b"/>
+    <circle cx="46" cy="9" r="7" fill="#92400e"/>
+    <circle cx="46" cy="9" r="3.4" fill="#c2854b"/>
+
+    <circle cx="32" cy="19" r="15" fill="#92400e"/>
+    <ellipse cx="32" cy="26" rx="10" ry="7.5" fill="#fde68a"/>
+    <ellipse cx="32" cy="22.5" rx="4" ry="3" fill="#451a03"/>
+    <circle cx="25" cy="15" r="2.3" fill="#1c1917"/>
+    <circle cx="39" cy="15" r="2.3" fill="#1c1917"/>
+    <circle cx="25.8" cy="14.1" r="0.8" fill="#ffffff"/>
+    <circle cx="39.8" cy="14.1" r="0.8" fill="#ffffff"/>
+  </g>
+</svg>

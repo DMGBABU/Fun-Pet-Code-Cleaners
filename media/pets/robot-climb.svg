@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Grippers haul it up rung by rung; the body ratchets upward on each pull. -->
+  <g>
+    <animateTransform attributeName="transform" type="translate"
+                      values="0 0; 0 -4; 0 0" dur="0.72s" repeatCount="indefinite"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 7; 0 -7; 0 7" dur="0.72s" repeatCount="indefinite"/>
+      <rect x="6" y="14" width="9" height="20" rx="4.5" fill="#64748b" transform="rotate(20 10 24)"/>
+      <rect x="2" y="10" width="11" height="7" rx="3" fill="#475569"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 -7; 0 7; 0 -7" dur="0.72s" repeatCount="indefinite"/>
+      <rect x="49" y="14" width="9" height="20" rx="4.5" fill="#64748b" transform="rotate(-20 54 24)"/>
+      <rect x="51" y="10" width="11" height="7" rx="3" fill="#475569"/>
+    </g>
+
+    <rect x="13" y="26" width="38" height="30" rx="9" fill="#94a3b8"/>
+    <rect x="20" y="34" width="24" height="14" rx="4" fill="#334155"/>
+    <circle cx="27" cy="41" r="3" fill="#22d3ee"/>
+    <circle cx="38" cy="41" r="3" fill="#f472b6"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 -5; 0 5; 0 -5" dur="0.72s" repeatCount="indefinite"/>
+      <rect x="15" y="54" width="13" height="10" rx="4" fill="#475569"/>
+    </g>
+    <g>
+      <animateTransform attributeName="transform" type="translate"
+                        values="0 5; 0 -5; 0 5" dur="0.72s" repeatCount="indefinite"/>
+      <rect x="36" y="54" width="13" height="10" rx="4" fill="#475569"/>
+    </g>
+
+    <rect x="17" y="4" width="30" height="21" rx="8" fill="#cbd5e1"/>
+    <rect x="22" y="10" width="20" height="10" rx="4" fill="#0f172a"/>
+    <rect x="25" y="12.5" width="5" height="5" rx="1.6" fill="#22d3ee"/>
+    <rect x="34" y="12.5" width="5" height="5" rx="1.6" fill="#22d3ee"/>
+    <circle cx="32" cy="2" r="2.2" fill="#f87171">
+      <animate attributeName="opacity" values="1;0.25;1" dur="0.72s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

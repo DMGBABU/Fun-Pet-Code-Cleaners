@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Steam curls off the top; the mug rocks gently. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-4 32 58; 4 32 58; -4 32 58" dur="1.9s" repeatCount="indefinite"/>
+    <path d="M44 28 Q58 28 58 38 Q58 48 44 46" stroke="#cbd5e1" stroke-width="6" fill="none"/>
+    <path d="M10 24 L46 24 L43 58 Q28 63 13 58 Z" fill="#f8fafc"/>
+    <path d="M10 24 L46 24 L45 32 L11 32 Z" fill="#e2e8f0"/>
+    <ellipse cx="28" cy="27" rx="16" ry="4.5" fill="#78350f"/>
+  </g>
+  <g stroke="#cbd5e1" stroke-width="4" fill="none" stroke-linecap="round">
+    <path d="M20 16 Q26 10 20 4">
+      <animate attributeName="opacity" values="0;0.9;0" dur="2.2s" repeatCount="indefinite"/>
+    </path>
+    <path d="M34 16 Q40 10 34 4">
+      <animate attributeName="opacity" values="0;0.9;0" dur="2.2s" begin="0.9s" repeatCount="indefinite"/>
+    </path>
+  </g>
+</svg>

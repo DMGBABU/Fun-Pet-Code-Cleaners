@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Working a mop: the head splays and drags on each pass. -->
+  <g>
+    <animateTransform attributeName="transform" type="rotate"
+                      values="-3 26 62; 4 26 62; -3 26 62" dur="0.85s" repeatCount="indefinite"/>
+
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-24 42 32; 20 42 32; -24 42 32" dur="0.85s" repeatCount="indefinite"/>
+      <line x1="42" y1="32" x2="52" y2="50" stroke="#a16207" stroke-width="4" stroke-linecap="round"/>
+      <path d="M46 48 Q56 44 60 50 Q58 62 50 62 Q44 58 46 48 Z" fill="#e2e8f0"/>
+      <path d="M49 51 L50 61 M53 50 L54 61 M56 52 L57 60"
+            stroke="#94a3b8" stroke-width="1.5" stroke-linecap="round"/>
+    </g>
+
+    <rect x="14" y="50" width="13" height="13" rx="6" fill="#78350f"/>
+    <rect x="29" y="50" width="13" height="13" rx="6" fill="#78350f"/>
+
+    <ellipse cx="27" cy="41" rx="19" ry="17" fill="#92400e"/>
+    <ellipse cx="27" cy="45" rx="11.5" ry="11" fill="#c2854b"/>
+    <rect x="2" y="32" width="11" height="18" rx="5.5" fill="#78350f"/>
+    <g>
+      <animateTransform attributeName="transform" type="rotate"
+                        values="-24 42 32; 20 42 32; -24 42 32" dur="0.85s" repeatCount="indefinite"/>
+      <rect x="38" y="26" width="10" height="17" rx="5" fill="#78350f" transform="rotate(24 43 34)"/>
+    </g>
+
+    <circle cx="14" cy="9" r="6.8" fill="#92400e"/>
+    <circle cx="14" cy="9" r="3.3" fill="#c2854b"/>
+    <circle cx="41" cy="9" r="6.8" fill="#92400e"/>
+    <circle cx="41" cy="9" r="3.3" fill="#c2854b"/>
+
+    <circle cx="27" cy="19" r="14.5" fill="#92400e"/>
+    <ellipse cx="28" cy="26" rx="9.5" ry="7.2" fill="#fde68a"/>
+    <ellipse cx="28" cy="22.5" rx="3.8" ry="2.9" fill="#451a03"/>
+    <circle cx="21" cy="15" r="2.3" fill="#1c1917"/>
+    <circle cx="34" cy="15" r="2.3" fill="#1c1917"/>
+    <circle cx="21.8" cy="14.1" r="0.8" fill="#ffffff"/>
+    <circle cx="34.8" cy="14.1" r="0.8" fill="#ffffff"/>
+  </g>
+</svg>
